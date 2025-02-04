@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Repo specific
+temp/*
+
 # C extensions
 *.so
 
