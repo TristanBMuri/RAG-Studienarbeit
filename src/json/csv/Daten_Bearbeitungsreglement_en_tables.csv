@@ -1,0 +1,53 @@
+0,1,2,3
+Recipient / Supplier,Object,"Particularly
+sensitive
+data",Trigger
+Banks,Monetary transactions,No,Automatic
+Public authorities / Courts,"Art. 82 KVG/LAMal,
+Art. 84a KVG/LAMal",Yes,Manual
+External printing companies,Customer magazine,No,Automatic
+Financial service providers,Bank master,No,Automatic
+"Joint institutions under the
+KVG/LAMal","Risk allocation, hospital days",No,Manual
+HMO partner,Art. 84a KVG/LAMal,Yes,Manual
+"Internet comparison
+services",Calculated offers,No,Automatic
+Cantons,"Individual premium reduction
+(IPV/RIP/IPR), Art. 64 KVG/LAMal",Yes,Automatic
+Service provider,"Art. 84a KVG/LAMal, Art. 59
+KVV/OAMal",Yes,"Automatic /
+manual"
+Recipient / Supplier,Object,"Particularly
+sensitive
+data",Trigger
+Medidata,"Exchange platform of electronic
+documents",Yes,Automatic
+"Tele-medical service
+partners",Health care,Yes,Manual
+santésuisse,"Information, Register of paying
+agents (ZSR/RCC), Data pool",No,Automatic
+Sedex,"Individual premium reduction
+(IPV/RIP/IPR)",Yes,Automatic
+Social insurance provider,Art. 84a KVG/LAMal,Yes,Manual
+SwissPost Solutions,Notification of payment receipts,No,Manual
+"Insurance card
+(VeKa/Cada/Teda)","Insurance card (Art. 42a KVG/LAMal,
+Ordinance on the insurance card for
+obligatory health care insurance
+(VVK/OCA/OTeA))",Yes,Automatic
+Insured persons,"Information, correspondence,
+accounting of benefits",Yes,"Automatic /
+manual"
+"Central contract registry
+(ZVR/RCCo)",Information,No,Manual
+"6. Documentation on the planning, implementation and operation of the data",,,
+collection,,,
+7. Registering the data collection with the Federal Data Protection and,,,
+Information Commissioner (EDÖB/PFPDT/IFPDT/FDPIC) after consulting with,,,
+the data protection officer,,,
+11. Control procedures and in particular the technical and organisational,,,
+measures as per Art. 20 of the Ordinance to the Swiss Federal Act on Data,,,
+Protection (VDSG/OLPD/OFADP),,,
+"14. Data processing procedures, in particular the procedures for rectifying,",,,
+"blocking, anonymising (pseudonymising), storing, safeguarding, archiving or",,,
+destroying data,,,

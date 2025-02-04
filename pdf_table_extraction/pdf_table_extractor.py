@@ -13,6 +13,11 @@ class PDFTableExtractor:
         self.pdf_folder = pdf_folder
         logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+    def ensure_output_directory(self, directory):
+        """Ensure the output directory exists."""
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
     def detect_table(self, pdf_path):
         try:
             tables = camelot.read_pdf(pdf_path, pages="1")
@@ -62,6 +67,32 @@ class PDFTableExtractor:
             logging.error(f"Error extracting tables from {pdf_path}: {e}")
             return None
 
+    def csv_to_json(self, csv_file):
+        """Convert a CSV file to JSON and save it in src/json."""
+        try:
+            df = pd.read_csv(csv_file)
+            if df.empty:
+                logging.warning(f"Skipping empty CSV file: {csv_file}")
+                return None
+
+            # Ensure the output directory exists
+            output_dir = os.path.join("src", "json")
+            self.ensure_output_directory(output_dir)
+
+            # Create JSON filename using secure path joining
+            base_name = os.path.splitext(os.path.basename(csv_file))[0]
+            json_file = os.path.join(output_dir, f"{base_name}.json")
+
+            # Convert to JSON and save
+            json_output = df.to_json(orient="records", indent=2)  # Added indent for readability
+            with open(json_file, "w", encoding="utf-8") as f:
+                f.write(json_output)
+
+            return json_file
+        except Exception as e:
+            logging.error(f"Error converting CSV to JSON: {csv_file}: {e}")
+            return None
+
     def process_pdfs_in_parallel(self):
         pdf_files = [os.path.join(self.pdf_folder, f) for f in os.listdir(self.pdf_folder) if f.endswith(".pdf")]
 
@@ -74,52 +105,13 @@ class PDFTableExtractor:
 
         return [file for file in table_files if file]
 
-    def validate_table_output(self, csv_file):
-        try:
-            df = pd.read_csv(csv_file)
-            if df.empty or df.shape[1] < 2:
-                logging.warning(f"Potential issue with extracted table: {csv_file}")
-                return False
-            return True
-        except Exception as e:
-            logging.error(f"Error reading {csv_file}: {e}")
-            return False
-
-    def sample_and_inspect(self, extracted_tables, sample_fraction=0.05):
-        sample_size = max(1, int(len(extracted_tables) * sample_fraction))
-        sample_files = random.sample(extracted_tables, sample_size)
-        for file in sample_files:
-            try:
-                print(pd.read_csv(file, nrows=5))  # Load only a few rows for efficiency
-            except Exception as e:
-                logging.error(f"Error sampling {file}: {e}")
-
-    def csv_to_json(self, csv_file):
-        try:
-            df = pd.read_csv(csv_file)
-            if df.empty:
-                logging.warning(f"Skipping empty CSV file: {csv_file}")
-                return None
-
-            json_output = df.to_json(orient="records")
-            json_file = csv_file.replace(".csv", ".json")
-            with open(json_file, "w") as f:
-                f.write(json_output)
-
-            return json_file
-        except Exception as e:
-            logging.error(f"Error converting CSV to JSON: {csv_file}: {e}")
-            return None
-
     def run(self):
         extracted_tables = self.process_pdfs_in_parallel()
-        extracted_tables = [file for file in extracted_tables if self.validate_table_output(file)]
-        self.sample_and_inspect(extracted_tables)
+        extracted_tables = [file for file in extracted_tables if file]  # Filter out None values
         json_files = [self.csv_to_json(file) for file in extracted_tables if file]
         logging.info(f"Successfully processed {len(json_files)} tables into JSON.")
 
 if __name__ == "__main__":
-    # pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
-    pdf_folder = "./Docs/"
+    pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
     extractor = PDFTableExtractor(pdf_folder)
     extractor.run()

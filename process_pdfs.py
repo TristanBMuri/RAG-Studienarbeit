@@ -9,6 +9,12 @@ logging.basicConfig(filename="contriever_process.log", level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
+def ensure_output_directory(directory):
+    """Ensure the output directory exists."""
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
 def extract_text_from_pdf(pdf_path):
     """Extract plain text from a PDF file using PyMuPDF."""
     try:
@@ -29,7 +35,7 @@ def extract_text_from_pdf(pdf_path):
         return None
 
 
-def process_pdf(pdf_path):
+def process_pdf(pdf_path, output_dir):
     """Processes a single PDF file, extracting both text and tables."""
     if not os.path.exists(pdf_path):
         logging.error(f"PDF file not found: {pdf_path}")
@@ -53,6 +59,9 @@ def process_pdf(pdf_path):
         if extracted_tables:
             table_json_path = extractor.csv_to_json(extracted_tables)
 
+        # Ensure the output directory exists
+        ensure_output_directory(output_dir)
+
         # Store combined output
         combined_output = {
             "pdf_name": pdf_name,
@@ -60,7 +69,7 @@ def process_pdf(pdf_path):
             "table_data": table_json_path if table_json_path else "No tables found"
         }
 
-        output_json = pdf_path.replace(".pdf", "_combined.json")
+        output_json = os.path.join(output_dir, f"{os.path.splitext(pdf_name)[0]}_combined.json")
         with open(output_json, "w") as f:
             json.dump(combined_output, f, indent=4)
 
@@ -71,8 +80,8 @@ def process_pdf(pdf_path):
         return None
 
 
-def process_pdfs(pdf_folder):
-    """Processes all PDFs in the given folder."""
+def process_pdfs(pdf_folder, output_dir):
+    """Processes all PDFs in the given folder and saves output to the specified directory."""
     if not os.path.exists(pdf_folder):
         logging.error(f"PDF folder not found: {pdf_folder}")
         return
@@ -84,11 +93,11 @@ def process_pdfs(pdf_folder):
         return
 
     for pdf in pdf_files:
-        process_pdf(pdf)
+        process_pdf(pdf, output_dir)
 
 
 if __name__ == "__main__":
-    # pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
-    pdf_folder = "./Docs/"
-    process_pdfs(pdf_folder)
+    pdf_folder = "./Docs/"  # Input folder for PDFs
+    output_dir = "src/json"  # Directory to save JSON outputs
+    process_pdfs(pdf_folder, output_dir)
     logging.info("PDF processing completed.")

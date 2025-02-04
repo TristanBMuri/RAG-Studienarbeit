@@ -1,0 +1,188 @@
+[
+  {
+    "0":"Recipient \/ Supplier",
+    "1":"Object",
+    "2":"Particularly\nsensitive\ndata",
+    "3":"Trigger"
+  },
+  {
+    "0":"Banks",
+    "1":"Monetary transactions",
+    "2":"No",
+    "3":"Automatic"
+  },
+  {
+    "0":"Public authorities \/ Courts",
+    "1":"Art. 82 KVG\/LAMal,\nArt. 84a KVG\/LAMal",
+    "2":"Yes",
+    "3":"Manual"
+  },
+  {
+    "0":"External printing companies",
+    "1":"Customer magazine",
+    "2":"No",
+    "3":"Automatic"
+  },
+  {
+    "0":"Financial service providers",
+    "1":"Bank master",
+    "2":"No",
+    "3":"Automatic"
+  },
+  {
+    "0":"Joint institutions under the\nKVG\/LAMal",
+    "1":"Risk allocation, hospital days",
+    "2":"No",
+    "3":"Manual"
+  },
+  {
+    "0":"HMO partner",
+    "1":"Art. 84a KVG\/LAMal",
+    "2":"Yes",
+    "3":"Manual"
+  },
+  {
+    "0":"Internet comparison\nservices",
+    "1":"Calculated offers",
+    "2":"No",
+    "3":"Automatic"
+  },
+  {
+    "0":"Cantons",
+    "1":"Individual premium reduction\n(IPV\/RIP\/IPR), Art. 64 KVG\/LAMal",
+    "2":"Yes",
+    "3":"Automatic"
+  },
+  {
+    "0":"Service provider",
+    "1":"Art. 84a KVG\/LAMal, Art. 59\nKVV\/OAMal",
+    "2":"Yes",
+    "3":"Automatic \/\nmanual"
+  },
+  {
+    "0":"Recipient \/ Supplier",
+    "1":"Object",
+    "2":"Particularly\nsensitive\ndata",
+    "3":"Trigger"
+  },
+  {
+    "0":"Medidata",
+    "1":"Exchange platform of electronic\ndocuments",
+    "2":"Yes",
+    "3":"Automatic"
+  },
+  {
+    "0":"Tele-medical service\npartners",
+    "1":"Health care",
+    "2":"Yes",
+    "3":"Manual"
+  },
+  {
+    "0":"sant\u00e9suisse",
+    "1":"Information, Register of paying\nagents (ZSR\/RCC), Data pool",
+    "2":"No",
+    "3":"Automatic"
+  },
+  {
+    "0":"Sedex",
+    "1":"Individual premium reduction\n(IPV\/RIP\/IPR)",
+    "2":"Yes",
+    "3":"Automatic"
+  },
+  {
+    "0":"Social insurance provider",
+    "1":"Art. 84a KVG\/LAMal",
+    "2":"Yes",
+    "3":"Manual"
+  },
+  {
+    "0":"SwissPost Solutions",
+    "1":"Notification of payment receipts",
+    "2":"No",
+    "3":"Manual"
+  },
+  {
+    "0":"Insurance card\n(VeKa\/Cada\/Teda)",
+    "1":"Insurance card (Art. 42a KVG\/LAMal,\nOrdinance on the insurance card for\nobligatory health care insurance\n(VVK\/OCA\/OTeA))",
+    "2":"Yes",
+    "3":"Automatic"
+  },
+  {
+    "0":"Insured persons",
+    "1":"Information, correspondence,\naccounting of benefits",
+    "2":"Yes",
+    "3":"Automatic \/\nmanual"
+  },
+  {
+    "0":"Central contract registry\n(ZVR\/RCCo)",
+    "1":"Information",
+    "2":"No",
+    "3":"Manual"
+  },
+  {
+    "0":"6. Documentation on the planning, implementation and operation of the data",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"collection",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"7. Registering the data collection with the Federal Data Protection and",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Information Commissioner (ED\u00d6B\/PFPDT\/IFPDT\/FDPIC) after consulting with",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"the data protection officer",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"11. Control procedures and in particular the technical and organisational",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"measures as per Art. 20 of the Ordinance to the Swiss Federal Act on Data",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Protection (VDSG\/OLPD\/OFADP)",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"14. Data processing procedures, in particular the procedures for rectifying,",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"blocking, anonymising (pseudonymising), storing, safeguarding, archiving or",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"destroying data",
+    "1":null,
+    "2":null,
+    "3":null
+  }
+]

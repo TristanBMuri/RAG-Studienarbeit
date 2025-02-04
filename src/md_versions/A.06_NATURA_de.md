@@ -1,0 +1,139 @@
+NATURA
+Zusatzversicherung
+
+NATURA – die ideale Versicherung für alle,
+die bewusst und aktiv leben.
+
+Sie bevorzugen alternative Heilmethoden und
+möchten von Beiträgen an Gesundheitsförderung
+und Prävention profitieren? Dann empfehlen wir
+Ihnen NATURA.
+
+Natürliche Alternative
+
+Gesundheitsförderung
+
+Für Familien
+
+Umfassende Beiträge an zahl-
+reiche alternative Behandlungen
+
+Beiträge an Gesundheits-
+förderung – inklusive Prävention
+
+Besondere Leistungen –
+attraktive Prämien für Kinder
+
+NATURA
+Zusatzversicherung
+
+NATURA gibt es mit unterschiedlichem Leistungsumfang. Versicherungsschutz, der auf die
+persönliche Situation und auf individuelle Ansprüche abgestimmt ist.
+
+NATURA
+
+NATURAplus
+
+Alternativmedizin1
+
+Ärztliche, naturheilpraktische
+und therapeutische Behandlungen
+
+Für von der CONCORDIA
+anerkannte Methoden,
+Heilmittel und Anbieter
+
+Ambulante naturheilpraktische
+Behandlungen inklusive verschriebener
+Heilmittel
+
+Über 70 Methoden
+
+Über 130 Methoden
+
+75 %,
+max. CHF 4’000/Jahr
+
+75 %,
+max. CHF 6’000/Jahr
+
+Ambulante therapeutische Behandlun-
+gen inklusive verschriebener Heilmittel
+
+75 %,
+max. CHF 1’500/Jahr
+
+75 %,
+max. CHF 2’000/Jahr
+
+Gesundheitsförderung
+
+Rücken und Haltung
+
+Für von der CONCORDIA
+anerkannte Massnahmen
+bei von der CONCORDIA
+anerkannten Anbietern
+
+Fitness (CONCORDIA Sport-Bonus
+bei NATURAplus, Beiträge an Fitnessabo
+und MuKi-/VaKi-Turnen)
+
+Schwangerschaft (z. B. Geburts-
+vorbereitung)
+
+Babyschwimmen (bei NATURAplus)
+
+Muskelaufbau (auf ärztliche
+Verordnung)
+
+Kurse zu weiteren Gesundheitsthemen
+
+50 %, max. CHF 200/Bereich und Jahr
+Mehrere Bereiche: total max. CHF 500/Jahr
+
+Prävention
+
+Diverse Beiträge an
+Präventionsmassnahmen
+
+90 %,
+max. CHF 500/Jahr
+
+1 Jährlicher Maximalbeitrag bei Alternativmedizin (ärztliche, naturheilpraktische und therapeutische Behandlungen):
+
+NATURA CHF 4’000 und NATURAplus CHF 6’000
+
+Mit «Jahr» ist jeweils das Kalenderjahr gemeint.
+
+Weitere Informationen: www.concordia.ch/natura
+
+Dieser Flyer dient zur Information und stellt kein verbindliches Angebot dar. Massgebend sind die Allgemeinen Versicherungsbe-
+
+dingungen (AVB) der Pflegezusatzversicherungen und die Zusätzlichen Versicherungsbedingungen (ZVB) NATURA der
+
+CONCORDIA.
+
+Bundesplatz 15 · 6002 Luzern · Telefon +41 41 228 01 11
+info@concordia.ch · www.concordia.ch
+
+)
+4
+2
+.
+
+2
+1
+
+(
+
+.
+
+D
+6
+0
+
+.
+
+A
+
