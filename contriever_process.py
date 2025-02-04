@@ -11,7 +11,7 @@ import json
 import spacy
 from tqdm import tqdm
 from collections import defaultdict
-from pdf_table_extraction import PDFTableExtractor
+from pdf_table_extraction import pdf_table_extractor
 
 # Set up logging
 logging.basicConfig(filename="contriever_process.log", level=logging.INFO)

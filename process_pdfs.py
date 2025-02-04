@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import fitz  # PyMuPDF for text extraction
-from pdf_table_extraction import PDFTableExtractor  # Import table extractor
+from pdf_table_extraction.pdf_table_extractor import PDFTableExtractor
 
 # Set up logging
 logging.basicConfig(filename="contriever_process.log", level=logging.INFO,
@@ -88,6 +88,7 @@ def process_pdfs(pdf_folder):
 
 
 if __name__ == "__main__":
-    pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
+    # pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
+    pdf_folder = "./Docs/"
     process_pdfs(pdf_folder)
     logging.info("PDF processing completed.")
