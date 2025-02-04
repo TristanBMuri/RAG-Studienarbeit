@@ -4,12 +4,17 @@ PDF Processor for Contriever Preparation
 """
 
 import glob
+import logging
 import re
 import fitz  # PyMuPDF
 import json
 import spacy
 from tqdm import tqdm
 from collections import defaultdict
+from pdf_table_extraction import PDFTableExtractor
+
+# Set up logging
+logging.basicConfig(filename="contriever_process.log", level=logging.INFO)
 
 # Configuration
 DEFAULT_MAX_WORDS = 300
@@ -169,7 +174,7 @@ if __name__ == "__main__":
             print(f"Critical error processing {pdf_file}: {str(e)}")
             continue
 
-    with open("processed_chunks.json", "w") as f:
+    with open("src/processed_chunks.json", "w") as f:
         json.dump(all_documents, f, indent=2)
 
     print(f"Successfully processed {len(all_documents)} chunks from {len(pdf_files)} PDFs")
