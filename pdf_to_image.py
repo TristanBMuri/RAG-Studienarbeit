@@ -1,26 +1,32 @@
-import base64
-import fitz
+import google.generativeai as genai
+from PIL import Image
 
-doc = fitz.open(path)
-for i, page in enumerate(doc):
-    pix = page.get_pixmap()
-    pix.save(f'page_{i}.png')
+# Configure your API key
+genai.configure(api_key='YOUR_API_KEY')  # Replace with your actual API key
 
-encoded_images = []
 
-for i in range(16):
-    image_path = f'page_{i}.png'
-    with open(image_path, 'rb') as image_file:
-        encoded_image = base64.b64encode(image_file.read()).decode("ascii")
-        encoded_images.append({
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/jpeg;base64,{encoded_image}"
-            }
-        })
-messages = [
-    {"role": "system", "content": "Extract the full text from the following document. Please put it in markdonw structure"},
-    {"role": "user", "content": encoded_images}
-]
+# Function to process image
+def analyze_image(image_path, prompt):
+    # Load the image
+    img = Image.open(image_path)
 
-# response =
+    # Initialize the model (use 'gemini-1.5-flash' or latest model name)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+
+    # Send both image and text prompt
+    response = model.generate_content([prompt, img])
+
+    return response.text
+
+
+# Example usage
+if __name__ == "__main__":
+    image_path = "path/to/your/image.jpg"  # Can be .jpg, .png, etc.
+    prompt = "Describe this image in detail"
+
+    try:
+        result = analyze_image(image_path, prompt)
+        print("Gemini Response:")
+        print(result)
+    except Exception as e:
+        print(f"Error: {e}")
