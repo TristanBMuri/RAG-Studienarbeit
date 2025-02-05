@@ -1,14 +1,26 @@
 import os
 import sys
 import json
-from pdf2image import convert_from_path
+import fitz  # PyMuPDF
 from PIL import Image
 import google.generativeai as genai
+import io
 
 
 def pdf_to_images(pdf_path):
     """Convert each page of the PDF to an image."""
-    return convert_from_path(pdf_path)
+    images = []
+    pdf_document = fitz.open(pdf_path)
+
+    for page_num in range(pdf_document.page_count):
+        page = pdf_document[page_num]
+        pix = page.get_pixmap()
+        img_bytes = pix.tobytes("png")
+        img = Image.open(io.BytesIO(img_bytes))
+        images.append(img)
+
+    pdf_document.close()
+    return images
 
 
 def extract_table_from_image(image):
