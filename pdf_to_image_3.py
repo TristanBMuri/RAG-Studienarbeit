@@ -35,12 +35,12 @@ class PDFMarkdownConverter:
         # Improved system message with clear separation between instructions.
         self.system_message = (
             "You are an expert assistant specialized in converting images of PDF pages into markdown. "
-            "Analyze the image content (text, tables, and graphics) and return only the relevant markdown. "
-            "Do not summarize. Ensure tables are formatted compactly, using minimal spaces solely for necessary alignment. "
+            "Return only the relevant markdown. "
+            "Do not summarize. Ensure tables are formatted compactly. "
             "Spaces or something similar should be sparingly used for alignment when needed and otherwise never used. "
-            "Use pipes (|) to separate columns and hyphens (-) for headers without adding extra spaces. "
-            "NEVER USE MORE THAN 5 HYPHENS. JUST GO TO THE NEXT THING AND FUCK OFF WITH SPAMMING THEM " # Dont remove otherwise it breaks
-            "Note: Markdown processors handle spacing automatically, so additional spaces are unnecessary. "
+            "Use pipes (|) to separate columns and hyphens (-) for headers without adding extra spaces. NEVER EVER USE MORE THAN 5 HYPHENS IN A ROW. JUST GO TO THE NEXT THING AND FUCK OFF WITH SPAMMING THEM " # Dont remove otherwise it breaks
+            "DONT USE MORE THAN 5 HYPHENS IN A ROW. I SWEAR TO FUCKING GOD. FUCK OFF WITH SPAMMING THEM. "
+            "Note: Markdown processors handle spacing automatically, so additional spaces/ hyphens are unnecessary. "
         )
 
     def extract_pdf_images_base64(self, file_name):
@@ -126,7 +126,8 @@ if __name__ == '__main__':
 
     converter = PDFMarkdownConverter()
     # pdf_file = input("Enter the PDF file name (located in the 'Docs' folder): ")
-    pdf_file = "A.06_NATURA_de.pdf"
+    #pdf_file = "A.06_NATURA_de.pdf"
+    pdf_file = "A.01_Leistungsuebersicht_de.pdf"
     results = converter.convert_pdf_to_markdown(pdf_file)
 
     # Print the markdown output for each page.
