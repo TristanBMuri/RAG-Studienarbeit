@@ -34,9 +34,13 @@ class PDFMarkdownConverter:
         )
         # Improved system message with clear separation between instructions.
         self.system_message = (
-            "You are an expert assistant specialized in converting images of PDF pages into well-structured markdown. "
-            "Analyze the image content (text, tables, and graphics) and return the relevant markdown. "
-            "Do not summarize. Do not echo any base64 data or image metadata in your output."
+            "You are an expert assistant specialized in converting images of PDF pages into markdown. "
+            "Analyze the image content (text, tables, and graphics) and return only the relevant markdown. "
+            "Do not summarize. Ensure tables are formatted compactly, using minimal spaces solely for necessary alignment. "
+            "Spaces or something similar should be sparingly used for alignment when needed and otherwise never used. "
+            "Use pipes (|) to separate columns and hyphens (-) for headers without adding extra spaces. "
+            "NEVER USE MORE THAN 5 HYPHENS. JUST GO TO THE NEXT THING AND FUCK OFF WITH SPAMMING THEM " # Dont remove otherwise it breaks
+            "Note: Markdown processors handle spacing automatically, so additional spaces are unnecessary. "
         )
 
     def extract_pdf_images_base64(self, file_name):
@@ -65,7 +69,7 @@ class PDFMarkdownConverter:
             encoded_image = base64.b64encode(img_bytes).decode("utf-8")
             attachments.append({
                 "type": "image_url",
-                "image_url": {"url": f"data:image/png;base64,{encoded_image}"}
+                "image_url": f"data:image/png;base64,{encoded_image}"
             })
 
         return attachments
@@ -80,7 +84,7 @@ class PDFMarkdownConverter:
         Invokes the LLM and returns a list of markdown results per page.
         """
         attachments = self.extract_pdf_images_base64(file_name)
-        meta_data = []
+        markdown_results = []
 
         for i, attachment in enumerate(attachments):
             # Build messages according to the multimodal format.
@@ -91,7 +95,7 @@ class PDFMarkdownConverter:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Please convert the attached image to markdown. Analyze the image content carefully."
+                            "text": ""
                         },
                         {
                             "type": "image_url",
@@ -103,14 +107,17 @@ class PDFMarkdownConverter:
             # Invoke the LLM using the recommended method.
             response = self.llm.invoke(messages)
 
+            print(response.response_metadata)
+            print(response.usage_metadata)
+
             # Extract markdown content from the response.
             markdown_result = getattr(response, "content", response)
-            meta_data.append({
+            markdown_results.append({
                 "page": i + 1,
                 "markdown": markdown_result
             })
 
-        return meta_data
+        return markdown_results
 
 if __name__ == '__main__':
     # Request API key if not already set.
@@ -118,7 +125,8 @@ if __name__ == '__main__':
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
 
     converter = PDFMarkdownConverter()
-    pdf_file = input("Enter the PDF file name (located in the 'Docs' folder): ")
+    # pdf_file = input("Enter the PDF file name (located in the 'Docs' folder): ")
+    pdf_file = "A.06_NATURA_de.pdf"
     results = converter.convert_pdf_to_markdown(pdf_file)
 
     # Print the markdown output for each page.
