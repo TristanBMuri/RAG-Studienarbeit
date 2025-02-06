@@ -5,6 +5,7 @@ __pycache__/
 
 # Repo specific
 temp/*
+output_images/*
 
 # C extensions
 *.so

@@ -1,7 +1,15 @@
+#!/usr/bin/env python3
+"""
+NOTE: If you encounter the warning
+      "grpc_wait_for_shutdown_with_timeout() timed out."
+Please downgrade grpcio by running:
+    pip install grpcio==1.60.1
+"""
+
 import base64
 import getpass
 import os
-import fitz
+import fitz  # PyMuPDF
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -24,27 +32,37 @@ class PDFMarkdownConverter:
             timeout=timeout,
             max_retries=max_retries,
         )
-        # Store an improved system message.
+        # Improved system message with clear separation between instructions.
         self.system_message = (
             "You are an expert assistant specialized in converting images of PDF pages into well-structured markdown. "
-            "Analyze the image content (text, tables, and graphics) and return the relevant markdown. Do not summarize"
-            "Do not echo any base64 data or image metadata in your output."
+            "Analyze the image content (text, tables, and graphics) and return the relevant markdown. "
+            "Do not summarize. Do not echo any base64 data or image metadata in your output."
         )
 
     def extract_pdf_images_base64(self, file_name):
         """
         Opens the specified PDF from the pdf_dir, converts each page to a PNG image,
         and encodes it as a base64 string. Returns a list of image attachment dictionaries.
+        Also saves each page as a PNG file for verification.
         """
         path = os.path.join(self.pdf_dir, file_name)
         doc = fitz.open(path)
         attachments = []
 
-        for page in doc:
-            pix = page.get_pixmap()  # Render the page to an image.
-            img_bytes = pix.tobytes("png")  # Convert to PNG format.
-            encoded_image = base64.b64encode(img_bytes).decode('ascii')
-            # Prepare the image attachment dictionary.
+        # Create output directory if it doesn't exist
+        output_dir = "output_images"
+        os.makedirs(output_dir, exist_ok=True)
+
+        for page_num, page in enumerate(doc):
+            pix = page.get_pixmap()  # Render the page to an image
+            img_bytes = pix.tobytes("png")  # Convert to PNG format
+
+            # Save the image to a file for verification
+            output_path = os.path.join(output_dir, f"page_{page_num + 1}.png")
+            with open(output_path, "wb") as img_file:
+                img_file.write(img_bytes)
+
+            encoded_image = base64.b64encode(img_bytes).decode("utf-8")
             attachments.append({
                 "type": "image_url",
                 "image_url": {"url": f"data:image/png;base64,{encoded_image}"}
@@ -56,27 +74,34 @@ class PDFMarkdownConverter:
         """
         For each page in the PDF, creates a message with:
          - A system message with clear instructions.
-         - A user message that instructs the model to convert the image to markdown.
-           The image is attached in a separate 'image' field.
+         - A user message containing a list with:
+             1. A text part instructing the conversion.
+             2. An image part containing the base64-encoded image.
         Invokes the LLM and returns a list of markdown results per page.
         """
         attachments = self.extract_pdf_images_base64(file_name)
         meta_data = []
 
         for i, attachment in enumerate(attachments):
-            # Build messages where the image is attached separately.
+            # Build messages according to the multimodal format.
             messages = [
                 {"role": "system", "content": self.system_message},
                 {
                     "role": "user",
-                    "content": "Please convert the attached image to markdown.",
-                    "image": attachment["image_url"]  # Attach the image.
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Please convert the attached image to markdown. Analyze the image content carefully."
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": attachment["image_url"]
+                        }
+                    ]
                 }
             ]
             # Invoke the LLM using the recommended method.
             response = self.llm.invoke(messages)
-
-            #print(messages)
 
             # Extract markdown content from the response.
             markdown_result = getattr(response, "content", response)
@@ -86,7 +111,6 @@ class PDFMarkdownConverter:
             })
 
         return meta_data
-
 
 if __name__ == '__main__':
     # Request API key if not already set.
@@ -100,4 +124,4 @@ if __name__ == '__main__':
     # Print the markdown output for each page.
     for page in results:
         print(f"\n--- Page {page['page']} Markdown ---\n")
-        print(page['markdown'])
+        print(page["markdown"])
