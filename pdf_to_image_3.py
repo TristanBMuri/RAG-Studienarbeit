@@ -18,7 +18,7 @@ class PDFMarkdownConverter:
         self,
         pdf_dir="Docs",
         model="gemini-2.0-flash-exp",
-        temperature=0,
+        temperature=1, # Keep at 1 or test
         max_tokens=None,
         timeout=None,
         max_retries=2,
@@ -36,7 +36,6 @@ class PDFMarkdownConverter:
         self.system_message = (
             "You are an expert assistant specialized in converting images of PDF pages into markdown. "
             "Return only the relevant markdown. "
-            "Do not summarize. Ensure tables are formatted compactly. "
             "Spaces or something similar should be sparingly used for alignment when needed and otherwise never used. "
             "Use pipes (|) to separate columns and hyphens (-) for headers without adding extra spaces. NEVER EVER USE MORE THAN 5 HYPHENS IN A ROW. JUST GO TO THE NEXT THING AND FUCK OFF WITH SPAMMING THEM " # Dont remove otherwise it breaks
             "DONT USE MORE THAN 5 HYPHENS IN A ROW. I SWEAR TO FUCKING GOD. FUCK OFF WITH SPAMMING THEM. "
