@@ -63,6 +63,9 @@ def convert_file_to_markdown(input_path, output_path):
         elif extension == ".txt":
             from unstructured.partition.text import partition_text
             elements = partition_text(filename=input_path)
+        elif extension == ".pptx":
+            from unstructured.partition.pptx import partition_pptx
+            elements = partition_pptx(filename=input_path)
         else:
             # Fall back to auto partition if file type is unrecognized
             from unstructured.partition.auto import partition
@@ -93,7 +96,7 @@ def convert_file_to_markdown(input_path, output_path):
 
 def main():
     # Define supported file extensions
-    supported_extensions = (".pdf", ".docx", ".html", ".htm", ".txt")
+    supported_extensions = (".pdf", ".docx", ".html", ".htm", ".txt", ".pptx")
     for file_name in os.listdir(INPUT_FOLDER):
         if file_name.lower().endswith(supported_extensions):
             input_file_path = os.path.join(INPUT_FOLDER, file_name)
