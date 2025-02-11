@@ -126,7 +126,11 @@ if __name__ == '__main__':
     converter = PDFMarkdownConverter()
     # pdf_file = input("Enter the PDF file name (located in the 'Docs' folder): ")
     #pdf_file = "A.06_NATURA_de.pdf"
-    pdf_file = "A.01_Leistungsuebersicht_de.pdf"
+    #pdf_file = "CON_BK_Checkliste_AppEmpfehlung_210x297mm_2fbg_DE.pdf"
+    #pdf_file = "Test_Modell_Grundversicherung.pdf"
+    #pdf_file = "Liste_Software-Anbieter_KM-Rechnungen.pdf"
+    pdf_file = "CON_E.07_Konsolidierungsprozess_Schweiz_EN_low.pdf"
+
     results = converter.convert_pdf_to_markdown(pdf_file)
 
     # Print the markdown output for each page.

@@ -75,7 +75,7 @@ def process_docs_folder(docs_path: str = "docs") -> List[Dict]:
     return processed_docs
 
 
-def save_processed_docs(processed_docs: List[Dict], output_file: str = "processed_pdfs.csv"):
+def save_processed_docs(processed_docs: List[Dict], output_file: str = "src/processed_pdfs.csv"):
     """Save processed documents to a CSV file"""
     if processed_docs:
         df = pd.DataFrame(processed_docs)
@@ -89,7 +89,7 @@ def save_processed_docs(processed_docs: List[Dict], output_file: str = "processe
             'file_size': df['file_size'],
             'content_length': df['content'].str.len()
         })
-        summary.to_csv('pdf_processing_summary.csv', index=False)
+        summary.to_csv('src/pdf_processing_summary.csv', index=False)
         print("Saved processing summary to pdf_processing_summary.csv")
 
 
