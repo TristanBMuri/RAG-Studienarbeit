@@ -1,0 +1,176 @@
+[
+  {
+    "0":"Empf\u00e4nger\/Lieferant",
+    "1":"Zweck",
+    "2":"Besonders\nsch\u00fctzenswerte\nDaten",
+    "3":"Ausl\u00f6ser"
+  },
+  {
+    "0":"Banken",
+    "1":"Zahlungsverkehr",
+    "2":"nein",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Beh\u00f6rden\/Gerichte",
+    "1":"Art. 82 KVG,\nArt. 84a KVG",
+    "2":"ja",
+    "3":"Manuell"
+  },
+  {
+    "0":"Externe Druckerei",
+    "1":"Kundenmagazin",
+    "2":"nein",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Finanzdienstleister",
+    "1":"Bankenstamm",
+    "2":"nein",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Gemeinsame Einrichtungen\nKVG",
+    "1":"Risikoausgleich,\nSpitaltage",
+    "2":"nein",
+    "3":"Manuell"
+  },
+  {
+    "0":"HMO Partner",
+    "1":"Art. 84a KVG",
+    "2":"ja",
+    "3":"Manuell"
+  },
+  {
+    "0":"Internetvergleichsdienste",
+    "1":"Kalkulierte Offerte",
+    "2":"nein",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Kantone",
+    "1":"IPV, KVG64",
+    "2":"ja",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Leistungserbringer",
+    "1":"Art. 84a KVG, KVV59",
+    "2":"ja",
+    "3":"Automatisch \/ Manuell"
+  },
+  {
+    "0":"Medidata",
+    "1":"Austauschplattform von\nelektronischen\nDokumenten",
+    "2":"ja",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Empf\u00e4nger\/Lieferant",
+    "1":"Zweck",
+    "2":"Besonders\nsch\u00fctzenswerte\nDaten",
+    "3":"Ausl\u00f6ser"
+  },
+  {
+    "0":"Partner Telemedizinische\nDienstleistungen",
+    "1":"Gesundheitsbetreuung",
+    "2":"ja",
+    "3":"Manuell"
+  },
+  {
+    "0":"Sant\u00e9suisse",
+    "1":"Ausk\u00fcnfte, ZSR,\nDatenpool",
+    "2":"nein",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Sedex",
+    "1":"IPV",
+    "2":"ja",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Sozialversicherer",
+    "1":"Art. 84a KVG",
+    "2":"ja",
+    "3":"Manuell"
+  },
+  {
+    "0":"SwissPost Solution",
+    "1":"Anzeigen der\nZahlungsbelege",
+    "2":"nein",
+    "3":"Manuell"
+  },
+  {
+    "0":"VEKA",
+    "1":"Versichertenkarte (KVG\nArt. 42a, VVK)",
+    "2":"Ja",
+    "3":"Automatisch"
+  },
+  {
+    "0":"Versicherte",
+    "1":"Auskunft,\nKorrespondenz,\nLeistungsabrechnungen",
+    "2":"ja",
+    "3":"Automatisch \/ Manuell"
+  },
+  {
+    "0":"ZVR",
+    "1":"Auskunft",
+    "2":"nein",
+    "3":"Manuell"
+  },
+  {
+    "0":"6. Dokumentation \u00fcber die Planung, Realisierung und den Betrieb der",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Datensammlung",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"11. Die Kontrollverfahren und insbesondere die technischen und",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"organisatorischen Massnahmen nach Art. 20 VDSG",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"12. Die Beschreibung der Datenfelder und die Organisationseinheiten, die darauf",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Zugriff haben",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"14. Die Datenbearbeitungsverfahren, insbesondere die Verfahren bei der",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Berichtigung, Sperrung, Anonymisierung (Pseudonymisierung), Speicherung,",
+    "1":null,
+    "2":null,
+    "3":null
+  },
+  {
+    "0":"Aufbewahrung, Archivierung oder Vernichtung der Daten",
+    "1":null,
+    "2":null,
+    "3":null
+  }
+]

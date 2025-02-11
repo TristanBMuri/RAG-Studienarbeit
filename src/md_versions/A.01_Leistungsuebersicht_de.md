@@ -1,0 +1,619 @@
+Obligatorische
+Krankenpflege versicherung nach KVG
+
+Bitte aufklappen
+
+Zusatzversicherungen nach VVG
+
+Bitte blättern
+
+Versicherungen und
+Leistungen der CONCORDIA
+
+Obligatorische Krankenpflegeversicherung
+(OKP, Grundversicherung)
+
+Traditionelles Modell, Hausarztmodell myDoc und HMO-Modell: Notrufservice und
+medizinische Beratung kostenlos per Telefon durch concordiaMed
+
+DIVERSApremium
+
+DIVERSAplus
+
+DIVERSAcare
+
+DIVERSA
+
+Medizinische Beratung 24/7
+
+Ambulante Behandlung –
+Schulmedizin
+
+Stationäre Behandlung –
+Spitalaufenthalt
+
+Telemedizin-Modell smartDoc: Notrufservice und medizinische Beratung per  Telefon
+und App durch Medgate, Abrechnung gemäss Tarmed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Behandlung durch ärztliche und andere anerkannte Medizinal personen
+(wie z. B. Chiropraktorinnen, Chiropraktoren, Hebammen)
+
+Spitalübernachtung bei ambulantem Eingriff:
+75 %, max. CHF 200/Jahr
+
+Spitalübernachtung bei ambulantem Eingriff:
+50 %, max. CHF 200/Jahr
+
+Allgemeine Abteilung in einem Spital gemäss kantonaler Spitalliste
+
+Alternative Heilmethoden –
+Komplementärmedizin
+
+Anthroposophische Medizin, Homöo pathie, Phytotherapie, Akupunktur und Arznei-
+mitteltherapie der tradi tionellen chinesischen Medizin bei ärztlichen Fachpersonen
+mit entsprechender Zusatz ausbildung
+
+Mutterschaft, Familie
+
+CHF 150 für Geburtsvorbereitungskurs bei Hebammen; 3 Sitzungen Still beratung
+bei Hebammen oder Pflegefachpersonen; Grunddeckung gem. gesetzlichen Leistun-
+gen bei Hausgeburt und ambulanter Geburt
+
+Rooming-in: CHF 100/Nacht, max. 10 Übernachtungen
+Familienzimmer bei Niederkunft: CHF 100/Nacht,
+max. 5 Übernachtungen (Karenzfrist 1 Jahr)
+Betreuung für das erkrankte oder verunfallte Kind1:
+CHF 50/Std., max. CHF 600/Jahr
+
+Rooming-in: CHF 60/Nacht, max. 10 Übernachtungen
+Familienzimmer bei Niederkunft: CHF 60/Nacht,
+max. 5 Übernachtungen (Karenzfrist 1 Jahr)
+Betreuung für das erkrankte oder verunfallte Kind1:
+CHF 30/Std., max. CHF 600/Jahr
+
+Medikamente
+
+Ärztlich verordnete, kassen pflichtige Medikamente
+
+Bei Nichtpflichtmedikamenten (wenn von Swissmedic
+registriert): 75 %
+
+Bei Nichtpflichtmedikamenten (wenn von Swissmedic
+registriert): 75 %
+
+Bei Nichtpflichtmedikamenten (wenn von Swissmedic
+registriert): 50 %
+
+Bei Nichtpflichtmedikamenten (wenn von Swissmedic
+registriert): 50 %
+
+Schutz- und Reiseimpfungen
+
+Impfungen gemäss gesetzlichen Leistungen
+
+Alle übrigen Impfungen: 90 %
+
+Alle übrigen Impfungen: 90 %
+
+Alle übrigen Impfungen: 90 %
+
+Alle übrigen Impfungen: 90 %
+
+Förderung von Gesundheit
+und Fitness
+
+Medizinische Vorsorge, Check-ups
+
+Grunddeckung gemäss gesetzlichen Leistungen
+
+Zahn
+
+Bestimmte Krankheiten und bei Zahnunfall: Behandlung ambulant und stationäre
+Behandlung in einem Spital gemäss kantonaler Spitalliste
+
+Brille und Kontaktlinsen
+
+Bis 18 Jahre: CHF 180/Jahr
+
+Nicht kassenpflichtige refraktive
+Chirurgie
+
+Auslandbehandlung, geplant
+
+Ambulant (Kieferorthopädie bis 22 Jahre, Kiefergelenkbe-
+schwerden usw.): 75 %
+Stationär (Kieferchirurgie): Allgemeine Abteilung im Spital
+gem. kantonaler Spitalliste
+
+Ambulant (Kieferorthopädie bis 22 Jahre, Kiefergelenkbe-
+schwerden usw.): 75 %
+Stationär (Kieferchirurgie): Allgemeine Abteilung im Spital
+gem. kantonaler Spitalliste
+
+Ambulant (Kieferorthopädie bis 22 Jahre, Kiefergelenkbe-
+schwerden usw.): 50 %
+Stationär (Kieferchirurgie): Allgemeine Abteilung im Spital
+gem. kantonaler Spitalliste
+
+Ambulant (Kieferorthopädie bis 22 Jahre, Kiefergelenkbe-
+schwerden usw.): 50 %
+Stationär (Kieferchirurgie): Allgemeine Abteilung im Spital
+gem. kantonaler Spitalliste
+
+Bis 18 Jahre: CHF 300/Jahr
+Ab 18 Jahren: CHF 300/3 Jahre
+
+Bis 18 Jahre: CHF 250/Jahr
+Ab 18 Jahren: CHF 250/3 Jahre
+
+Bis 18 Jahre: CHF 200/Jahr
+Ab 18 Jahren: CHF 200/3 Jahre
+
+Bis 18 Jahre: CHF 150/Jahr
+Ab 18 Jahren: CHF 150/3 Jahre
+
+50 %, max. CHF 600/5 Jahre (Karenzfrist: 1 Jahr)
+
+Ambulante ärztliche Behandlung (Franchise CHF 1’000):
+75 %, max. CHF 10’000/Jahr
+
+50 %, max. CHF 400/5 Jahre (Karenzfrist: 1 Jahr)
+
+Auslandbehandlung im Notfall
+
+In EU-/EFTA-Staaten ist die Versicherungs karte notwendig.
+Innerhalb EU-/EFTA-Staaten: mit europ. Krankenversicherungskarte: jeweiliger Ländertarif
+Ausserhalb EU-/EFTA-Staaten: max. doppelter Tarif der Schweiz (stationäre Behandlung:
+max. 90 % der Kosten, die der Spitalaufenthalt in der Schweiz kosten würde)
+
+Suchaktion zur Rettung und Bergung2: max. CHF 20’000
+Rettungs- und Transportkosten2: unbeschränkt
+Erkrankung oder Unfall2: stationär max. 75 Tage, ambulant
+ortsüblicher Tarif
+
+Suchaktion zur Rettung und Bergung2: max. CHF 20’000
+Rettungs- und Transportkosten2: unbeschränkt
+Erkrankung oder Unfall2: stationär max. 60 Tage, ambulant
+ortsüblicher Tarif
+
+Suchaktion zur Rettung und Bergung2: max. CHF 10’000
+Rettungs- und Transportkosten2: unbeschränkt
+Erkrankung oder Unfall2: stationär max. 45 Tage, ambulant
+ortsüblicher Tarif
+
+Suchaktion zur Rettung und Bergung2: max. CHF 10’000
+Rettungs- und Transportkosten2: unbeschränkt
+Erkrankung oder Unfall2: stationär max. 30 Tage, ambulant
+ortsüblicher Tarif
+
+Such- und Rettungskosten
+Ambulanztransporte (Schweiz)
+
+Rettungskosten: 50 %, max. CHF 5’000/Jahr
+Transportkosten: 50 %, max. CHF 500/Jahr
+
+Such- und Rettungskosten: max. CHF 25’000
+Transportkosten: unbeschränkt
+
+Such- und Rettungskosten: max. CHF 20’000
+Transportkosten: unbeschränkt
+
+Such- und Rettungskosten: max. CHF 15’000
+Transportkosten: unbeschränkt
+
+Such- und Rettungskosten: max. CHF 10’000
+Transportkosten: unbeschränkt
+
+Psychologische Psychotherapie
+
+Ärztlich verordnete Krankheitsbehandlung bei anerkannten Psychotherapeutinnen
+oder Psychotherapeuten
+
+Kuren
+
+Hauskrankenpflege
+und Haushaltshilfen
+
+Hilfsmittel
+
+Patientenrechtsschutz
+(Versicherungsträgerin: Protekta)
+
+Badekuren: CHF 10/Tag, max. 21 Tage/Jahr, ärztliche und therapeutische Kosten
+Erholungskuren: ärztliche und therapeutische Kosten
+
+Badekuren: CHF 50/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 50/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 50/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 50/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 30/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 30/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 30/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 30/Tag, max. 21 Tage/Jahr
+
+Hauskrankenpflege (Spitex): Grunddeckung gemäss gesetzlichen Leistungen
+
+Haushaltshilfe: CHF 50/Tag, max. 30 Tage/Jahr
+
+Haushaltshilfe: CHF 50/Tag, max. 30 Tage/Jahr
+
+Haushaltshilfe: CHF 30/Tag, max. 30 Tage/Jahr
+
+Haushaltshilfe: CHF 30/Tag, max. 30 Tage/Jahr
+
+Grunddeckung gemäss gesetzlichen Leistungen
+
+50 %, max. CHF 2’000
+
+50 %, max. CHF 2’000
+
+50 %, max. CHF 1’000
+
+50 %, max. CHF 1’000
+
+In Europa: max. CHF 500’000
+Ausserhalb Europas: max. CHF 50’000
+
+In Europa: max. CHF 300’000
+Ausserhalb Europas: max. CHF 50’000
+
+Kostenbeteiligung
+
+Franchisen bis 18 Jahre: CHF 0 bis 600/Jahr; 10 % Selbstbehalt, max. CHF 350/Jahr;
+Franchisen ab 18 Jahren: CHF 300 bis 2’500/Jahr; 10 % Selbstbehalt, max. CHF 700/Jahr;
+Ausgewählte Medikamente: 40 %
+
+Keine Franchise (ausgenommen geplante ambulante ärztliche
+Behandlungen im Ausland)
+
+Keine Franchise
+
+Mit «Jahr» ist jeweils das Kalenderjahr gemeint.
+Massgebend sind das Bundesgesetz über die Krankenversicherung, die zugehörigen Verordnungen sowie die Allgemeinen und
+Zusätzlichen Versicherungsbedingungen (AVB und ZVB) der CONCORDIA.
+
+1  Organisiert durch die CONCORDIA
+2  Organisiert durch concordiaMed 24-Stunden-Notrufservice
+
+Keine Franchise
+
+Keine Franchise
+
+NATURAplus
+
+NATURA
+
+Ferien- und
+Reiseversicherung
+
+Zahnpflegeversicherung
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Über 130 Methoden (von der CONCORDIA anerkannt)1;
+Behandlung inkl. verschriebener Heilmittel
+Naturheilpraktische Behandlung: 75 %, max. CHF 6’000/Jahr
+Therapeutische Behandlung: 75 %, max. CHF 2’000/Jahr
+
+Über 70 Methoden (von der CONCORDIA anerkannt)2;
+Behandlung inkl. verschriebener Heilmittel
+Naturheilpraktische Behandlung: 75 %, max. CHF 4’000/Jahr
+Therapeutische Behandlung: 75 %, max. CHF 1’500/Jahr
+
+Geburtsvorbereitungskurs und Stillberatung, Schwanger-
+schafts-, Beckenboden- und Rückbildungsgymnastik,
+Babyschwimmen: 50 %, max. CHF 200/Bereich und Jahr
+Mehrere Bereiche: max. CHF 500/Jahr
+
+Geburtsvorbereitungskurs und Stillberatung, Schwanger-
+schafts-, Beckenboden- und Rückbildungsgymnastik:
+50 %, max. CHF 200/Bereich und Jahr
+Mehrere Bereiche: max. CHF 500/Jahr
+
+Unvorhergesehene Niederkunft im Ausland3: ortsüblicher Tarif
+Besuchsreise einer verwandten oder nahestehenden Person3:
+Bahnbillett bzw. Flugticket Economy ab 10 Tagen
+Spitalaufenthalt
+
+Rücken und Haltung, Fitness, CONCORDIA Sport-Bonus usw.:
+50 %, max. CHF 200/Bereich und Jahr
+Mehrere Bereiche: max. CHF 500/Jahr
+
+Rücken und Haltung, Fitness usw.:
+50 %, max. CHF 200/Bereich und Jahr
+Mehrere Bereiche: max. CHF 500/Jahr
+
+90 %, max. CHF 500/Jahr (wenn von der CONCORDIA anerkannt)
+
+90 %, max. CHF 500/Jahr (wenn von der CONCORDIA anerkannt)
+
+Unfallbedingte Zahnbehandlungen im Ausland: ortsüblicher
+Tarif
+
+Variante 1: 50 % bis CHF    500/Jahr
+Variante 2: 50 % bis CHF 1’000/Jahr
+Variante 3: 75 % bis CHF 1’500/Jahr
+Variante 4: 75 % bis CHF 2’000/Jahr
+
+Suchaktion zur Rettung und Bergung3: max. CHF 10’000
+Rettungs- und Transportkosten3: unbeschränkt
+Ambulante und stationäre Heilungskosten3: ortsüblicher Tarif
+Spitalkostenvorschüsse: max. CHF 10’000
+
+Keine Franchise
+
+Keine Franchise
+
+Keine Franchise
+
+1  Jährlicher Maximalbeitrag bei Alternativmedizin (ärztliche,
+
+2  Jährlicher Maximalbeitrag bei Alternativmedizin (ärztliche,
+
+3  Organisiert durch concordiaMed 24-Stunden-Notrufservice
+
+naturheilpraktische und therapeutische Behandlungen): CHF 6’000
+
+naturheilpraktische und therapeutische Behandlungen): CHF 4’000
+
+Spitalversicherung
+PRIVAT
+
+Spitalversicherung
+HALBPRIVAT
+
+Spitalversicherung
+LIBERO
+
+Spitalversicherung
+ALLGEMEIN
+
+Notrufservice, medizinische Beratung sowie direkte Terminver-
+einbarung kostenlos per Telefon durch concordiaMed premium
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Notrufservice und medizinische Beratung kostenlos per Telefon
+durch concordiaMed
+
+Einzelzimmer
+Freie Spitalwahl, weltweit1
+Freie Wahl der Ärztin oder des Arztes im Spital
+
+Zweibettzimmer
+Freie Spitalwahl, in der ganzen Schweiz1
+Freie Wahl der Ärztin oder des Arztes im Spital
+
+Gemäss bei Spitaleintritt gewählter Spitalabteilung
+Freie Spitalwahl, in der ganzen Schweiz1
+
+Mehrbettzimmer
+Freie Spitalwahl, in der ganzen Schweiz1
+
+Rooming-in: bis CHF 60/Nacht an den Aufenthalt des beglei-
+tenden Elternteils im Spital, in dem das Kind hospitalisiert
+ist oder umgekehrt
+
+Rooming-in: bis CHF 60/Nacht an den Aufenthalt des beglei-
+tenden Elternteils im Spital, in dem das Kind hospitalisiert
+ist oder umgekehrt
+
+Rooming-in: bis CHF 60/Nacht an den Aufenthalt des beglei-
+tenden Elternteils im Spital, in dem das Kind hospitalisiert
+ist oder umgekehrt
+
+Rooming-in: bis CHF 60/Nacht an den Aufenthalt des beglei-
+tenden Elternteils im Spital, in dem das Kind hospitalisiert
+ist oder umgekehrt
+
+Auszahlung bei ambulanter Geburt und Haus geburt:
+CHF 1’500
+
+Auszahlung bei ambulanter Geburt und Haus geburt:
+CHF 1’000
+
+Auszahlung bei ambulanter Geburt und Haus geburt:
+CHF 300
+
+Auszahlung bei ambulanter Geburt und Haus geburt:
+CHF 300
+
+Stationär, bei bestimmten Krankheiten und Zahnunfall:
+Einzelzimmer
+Freie Spitalwahl, weltweit1
+Freie Wahl der Ärztin oder des Arztes im Spital
+
+Stationär, bei bestimmten Krankheiten und Zahnunfall:
+Zweibettzimmer
+Freie Spitalwahl, in der ganzen Schweiz1
+Freie Wahl der Ärztin oder des Arztes im Spital
+
+Stationär, bei bestimmten Krankheiten und Zahnunfall:
+Gemäss bei Spitaleintritt gewählter Spitalabteilung
+Freie Spitalwahl, in der ganzen Schweiz1
+
+Stationär, bei bestimmten Krankheiten und Zahnunfall:
+Mehrbettzimmer
+Freie Spitalwahl, in der ganzen Schweiz1
+
+Weltweit (für in der Schweiz anerkannte Behandlungsmethoden)
+
+Weltweit (für in der Schweiz anerkannte Behandlungsmethoden)
+
+Badekuren: CHF 70/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 70/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 50/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 50/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 30/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 30/Tag, max. 21 Tage/Jahr
+
+Badekuren: CHF 30/Tag, max. 21 Tage/Jahr
+Erholungskuren: CHF 30/Tag, max. 21 Tage/Jahr
+
+Haushaltshilfe: CHF 70/Tag, max. 30 Tage/Jahr
+
+Haushaltshilfe: CHF 50/Tag, max. 30 Tage/Jahr
+
+Haushaltshilfe: CHF 30/Tag, max. 30 Tage, innerhalb von
+365 Tagen
+
+Haushaltshilfe: CHF 30/Tag, max. 30 Tage/Jahr
+
+Franchise-Varianten: CHF 0 bis 10’000/Jahr
+Kein Selbstbehalt
+
+Franchise-Varianten: CHF 0 bis 10’000/Jahr
+Kein Selbstbehalt
+
+PRIVAT2: Selbstbehalt 35 %, max. CHF 4’000/Jahr
+HALBPRIVAT2: Selbstbehalt 20 %, max. CHF 2’000/Jahr
+ALLGEMEIN: kein Selbstbehalt
+
+Keine Franchise
+Kein Selbstbehalt
+
+1  In von der CONCORDIA anerkannten Spitälern
+
+2  Ab 2 Personen: max CHF 4’000/Jahr
+
+Erwerbsausfall
+
+Sparen mit Risikoschutz
+
+Taggeldversicherung
+
+Taggeld bei Arbeitsunfähigkeit durch Krankheit, Schwangerschaftskomplikationen
+oder Unfall
+Individuell wählbare Versicherungskombination für Krankheits- und/oder
+Unfallrisiken
+
+INVIVA
+
+Individuell wählbare Taggeldhöhe
+
+Wählbarer Zeitpunkt des Leistungsbeginns
+
+Taggeldversicherung STANDARD
+Speziell für Erwerbstätige, die ihren gewohnten Lebensstandard sichern
+und Lohneinbussen infolge Krankheit, Mutterschaft oder Unfall vermeiden
+möchten.
+Die CONCORDIA zahlt das Taggeld in der Höhe der effektiven
+Lohneinbusse bis maximal zum Betrag des versicherten Taggelds.
+
+Taggeldversicherung PLUS
+Speziell für selbständig Erwerbende sowie Haushaltführende.
+Die CONCORDIA zahlt in jedem Fall die vereinbarte Leistung – unabhängig
+von der Höhe des entstandenen Erwerbsausfalls.
+Bei Leistungen anderer Privat- und Sozialversicherungen oder anderer
+Zahlungspflichtiger erfolgt keine Kürzung der Taggelder.
+Ein Nachweis über den entgangenen Verdienst ist nicht notwendig.
+
+Vorsorge und Sparen mit Fonds
+Im Erlebensfall: Auszahlung des Wertes der Fondsanteile
+Periodische Prämien bereits ab CHF 50/Monat
+Einmaleinlage ab CHF 5’000
+Teilnahme an der Entwicklung der Finanzmärkte
+Garantiertes Kapital im Todesfall
+Fondsausschüttungen und Rückvergütungen von Fondsgebühren (Retrozessionen)
+werden während der Versicherungsdauer zugunsten der versicherungsnehmenden
+Person in zusätzliche Anteile des gleichen Fonds investiert.
+
+Invalidität und Todesfall
+
+Gebundene Vorsorge (Säule 3a)
+
+ACCIDENTA
+
+TIKU
+
+Kapitalleistungen bei Invalidität oder Tod durch Unfall
+Individuell wählbare Versicherungssummen
+Leistung unabhängig von anderen Versicherungen
+Dem Invaliditätsgrad angepasste progressive Auszahlung
+Weltweite Gültigkeit
+
+Kapitalleistungen bei Invalidität oder Tod infolge Krankheit oder Unfall
+Individuell wählbare Versicherungssummen
+Leistung unabhängig von anderen Versicherungen
+Dem Invaliditätsgrad angepasste Auszahlung (bereits ab einem Invaliditätsgrad
+von 25 %)
+Weltweite Gültigkeit
+10 % Prämienrabatt ab 2 Personen
+Vereinfachtes Annahmeverfahren bei vorgeburtlicher Antragsstellung
+
+CONVITArisk
+
+CONVITAsave
+
+Garantiertes Todes- und Invaliditätskapital infolge Krankheit oder Unfall
+Individuell wählbare Versicherungssummen
+Konstante Prämie während der gesamten Vertragsdauer
+Prämienbefreiung bei Erwerbsunfähigkeit (optional versicherbar)
+Flexible Anpassung der Versicherungsdeckung während der Vertragsdauer möglich
+Bezahlte Prämien können vom steuerbaren Einkommen abgezogen werden
+
+Vorsorgen und gleichzeitig Steuern sparen
+Wahl aus drei verschiedenen Anlageprofilen
+Flexible Einzahlung der Sparprämie
+Optionale Indexierung
+Auszahlung von 101 % des Fondswerts bei Tod durch Krankheit oder Unfall
+Prämienbefreiung bei Erwerbsunfähigkeit (optional versicherbar)
+Bezahlte Prämien können vom steuerbaren Einkommen abgezogen werden
+Fondsausschüttungen und Rückvergütungen von Fondsgebühren (Retrozessionen)
+werden während der Versicherungsdauer zugunsten der vorsorgenehmenden
+ Person in zusätzliche Anteile des gleichen Fonds investiert.
+
+Bundesplatz 15 · 6002 Luzern · Telefon +41 41 228 01 11
+info@concordia.ch · www.concordia.ch
+
+)
+4
+2
+.
+
+2
+1
+
+(
+
+.
+
+D
+1
+0
+
+.
+
+A
+
