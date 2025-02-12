@@ -3,6 +3,8 @@
 ## PDF-Prozessor für die Vorbereitung von Contriever
 ### contriver_process.py
 
+###### Output: src/processed_chunks.json
+
 Dieses Skript dient der Verarbeitung von PDF-Dokumenten, um deren Inhalte für die weitere Nutzung im Contriever-System aufzubereiten. 
 Es extrahiert den Text aus PDF-Dateien, entfernt wiederholte Kopf- und Fußzeilen und teilt den bereinigten Text in satzbasierte Abschnitte (Chunks) auf.
 Funktionsweise
@@ -47,6 +49,8 @@ optimal für die weitere Verarbeitung im Contriever-System vorbereitet sind.
 ## Weniger Basic PDF prozessor 2
 ### process_pdfs.py
 
+###### Output: src/json/*
+
 Dieses Skript dient der Extraktion von Text und Tabellen aus PDF-Dokumenten. Es verarbeitet alle PDFs in einem angegebenen Verzeichnis, extrahiert den unstrukturierten Text sowie die strukturierten Tabellendaten und speichert die kombinierten Ergebnisse als JSON-Dateien.
 Funktionsweise
 
@@ -79,6 +83,8 @@ Dieses Skript bietet eine effiziente Methode zur Extraktion und Speicherung von 
 ## PDF to img to Markdown
 ### pdf_to_image_3.py
 
+###### Output: output_images/* && console
+
 Dieses Skript ermöglicht die Umwandlung von PDF-Dokumenten in das Markdown-Format, indem es jede Seite des PDFs als Bild 
 rendert und anschliessend ein Sprachmodell zur Texterkennung und -konvertierung verwendet.
 Funktionsweise
@@ -107,6 +113,8 @@ Dieses Skript bietet eine effiziente Methode, um PDF-Inhalte in das Markdown-For
 
 ## Unstructured Document to Markdown
 ### O3_unstructured.py
+
+###### Output: src/Unstructured/*
 
 Dieses Skript automatisiert die Konvertierung verschiedener Dateiformate 
 wie PDF, DOCX, HTML, TXT und PPTX in das Markdown-Format. 
@@ -149,6 +157,8 @@ Markdown-Format, was insbesondere für die Erstellung von Dokumentationen und di
 ## Markitdown PDF to Markdown
 ### pdf_to_md_converter.py
 
+###### Output: src/md_versions/*
+
 Dieses Skript automatisiert die Umwandlung von PDF-Dateien in das Markdown-Format mit Markitdown. 
 Es durchsucht das Verzeichnis Docs nach PDF-Dateien, konvertiert jede gefundene Datei und speichert die resultierenden 
 Markdown-Dateien im Verzeichnis src/md_versions.
@@ -188,7 +198,9 @@ Dieses Skript bietet eine effiziente Methode zur Stapelverarbeitung von PDF-Date
 Markdown-Format, was insbesondere für die Erstellung von Dokumentationen und die Datenaufbereitung nützlich ist.
 
 ## Mark any down
-### mark_any_down
+### mark_any_down.py
+
+###### Output: console
 
 Prints Markdown of given document into the console.
 All hardcoded.
