@@ -30,6 +30,10 @@ Anpassbare Parameter
 
     HEADER_FOOTER_THRESHOLD: Prozentsatz der Seiten, auf denen ein Muster auftreten muss, um als Kopf- oder Fußzeile erkannt zu werden (Standardwert: 0,75).
 
+Hinweis:
+
+    Es ist nicht so gut.
+
 Diese Parameter können direkt im Skript an die spezifischen Anforderungen angepasst werden.
 Fehlerbehandlung
 
@@ -39,6 +43,38 @@ Dateien fortgesetzt wird, um eine möglichst vollständige Datenextraktion siche
 
 Durch diese strukturierte Vorgehensweise stellt das Skript sicher, dass die aus den PDF-Dokumenten extrahierten Texte 
 optimal für die weitere Verarbeitung im Contriever-System vorbereitet sind.
+
+## Weniger Basic PDF prozessor 2
+### process_pdfs.py
+
+Dieses Skript dient der Extraktion von Text und Tabellen aus PDF-Dokumenten. Es verarbeitet alle PDFs in einem angegebenen Verzeichnis, extrahiert den unstrukturierten Text sowie die strukturierten Tabellendaten und speichert die kombinierten Ergebnisse als JSON-Dateien.
+Funktionsweise
+
+    Verzeichniskontrolle: Das Skript überprüft, ob das Ausgabeverzeichnis existiert, und erstellt es bei Bedarf.
+
+    PDF-Verarbeitung: Für jede PDF-Datei im Eingabeverzeichnis wird Folgendes durchgeführt:
+
+        Textextraktion: Mit PyMuPDF wird der Text aus jeder Seite der PDF extrahiert und in einer Liste gespeichert.
+
+        Tabellenextraktion: Mit PDFTableExtractor werden Tabellen erkannt und extrahiert.
+
+    Datenzusammenführung: Die extrahierten Texte und Tabellen werden in einem Dictionary zusammengeführt.
+
+    Speicherung: Das kombinierte Ergebnis wird als JSON-Datei im Ausgabeverzeichnis gespeichert, wobei der Dateiname der ursprünglichen PDF-Datei entspricht.
+
+    Fehlerbehandlung: Tritt während der Verarbeitung ein Fehler auf, wird dieser im Log festgehalten, und das Skript fährt mit der nächsten Datei fort.
+
+Hinweise
+
+    Es ist nicht so gut.    
+
+    Abhängigkeiten: Das Skript verwendet die Bibliotheken PyMuPDF für die Textextraktion und PDFTableExtractor für die Tabellenextraktion.
+
+    Pfadanpassung: Passen Sie die Variablen pdf_folder und output_dir an Ihre spezifischen Eingabe- und Ausgabeverzeichnisse an.
+
+    Logging: Das Skript erstellt eine Log-Datei namens contriever_process.log, in der Informationen und Fehler während der Verarbeitung festgehalten werden.
+
+Dieses Skript bietet eine effiziente Methode zur Extraktion und Speicherung von Text- und Tabellendaten aus PDF-Dokumenten für weitere Analysen oder Verarbeitungen.
 
 ## PDF to img to Markdown
 ### pdf_to_image_3.py
@@ -151,3 +187,8 @@ Hinweise
 Dieses Skript bietet eine effiziente Methode zur Stapelverarbeitung von PDF-Dateien und deren Umwandlung in das 
 Markdown-Format, was insbesondere für die Erstellung von Dokumentationen und die Datenaufbereitung nützlich ist.
 
+## Mark any down
+### mark_any_down
+
+Prints Markdown of given document into the console.
+All hardcoded.

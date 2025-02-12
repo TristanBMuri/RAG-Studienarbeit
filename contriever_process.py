@@ -1,8 +1,3 @@
-"""
-PDF Processor for Contriever Preparation
-- Now with sentence-aware chunking and error handling
-"""
-
 import glob
 import logging
 import re
@@ -11,7 +6,6 @@ import json
 import spacy
 from tqdm import tqdm
 from collections import defaultdict
-from pdf_table_extraction import pdf_table_extractor
 
 # Set up logging
 logging.basicConfig(filename="contriever_process.log", level=logging.INFO)
