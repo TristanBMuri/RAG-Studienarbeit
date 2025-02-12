@@ -112,6 +112,6 @@ class PDFTableExtractor:
         logging.info(f"Successfully processed {len(json_files)} tables into JSON.")
 
 if __name__ == "__main__":
-    pdf_folder = input("Enter the PDF folder path: ")  # Allow user input
+    pdf_folder = input("Enter the PDF folder path: ")
     extractor = PDFTableExtractor(pdf_folder)
     extractor.run()

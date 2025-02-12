@@ -1,4 +1,20 @@
 # RAG-Studienarbeit
+##### Erstellt von Tristan Muri
+
+Dieses Repository ist eine Sammlung von verschiedenen Ansätzen für das Preprocessing von Dokumenten.
+Der Output der meisten dieser Skripts ist Markdown. 
+Grund dafür ist das einfachere Prüfen des Resultats im Vergleich zu json.
+Eines dieser Skripts(pdf_to_image_3.py) braucht einen Google AI studio API key. 
+Der rest kann einfach eine lokale Library installiert werden.
+
+### Beschreibung Skripts
+Die einzelnen Skripts haben alle einen eigenen Ausschnitt über ihre Details.
+
+RAG_test.ipynb kann ignoriert werden da es noch keine Funktion erfüllt.
+
+### Auswertung
+Die Auswertung der verschiedenen Skripts ist auf Confluence unter 
+"Task Preprocessing für LLMs" zu finden.
 
 ## PDF-Prozessor für die Vorbereitung von Contriever
 ### contriver_process.py
@@ -11,12 +27,12 @@ Funktionsweise
 
     Textextraktion: Das Skript verwendet die Bibliothek PyMuPDF, um den Text aus den Seiten der PDF-Dokumente zu extrahieren.
 
-    Erkennung von Kopf- und Fußzeilen: Durch die Analyse der ersten und letzten Zeilen jeder Seite identifiziert 
-    das Skript wiederholte Muster, die als Kopf- oder Fußzeilen fungieren. Diese werden basierend auf einem festgelegten 
+    Erkennung von Kopf- und Fusszeilen: Durch die Analyse der ersten und letzten Zeilen jeder Seite identifiziert 
+    das Skript wiederholte Muster, die als Kopf- oder Fusszeilen fungieren. Diese werden basierend auf einem festgelegten 
     Schwellenwert als solche erkannt und können entfernt werden.
 
     Textbereinigung: Nach der Extraktion wird der Text bereinigt, indem überflüssige Leerzeichen entfernt, Zeilenumbrüche 
-    korrigiert und erkannte Kopf- und Fußzeilen eliminiert werden.
+    korrigiert und erkannte Kopf- und Fusszeilen eliminiert werden.
 
     Satzbasierte Aufteilung: Unter Verwendung des spaCy-Sprachmodells wird der bereinigte Text in einzelne Sätze segmentiert. 
     Diese Sätze werden anschließend zu Abschnitten (Chunks) zusammengefasst, wobei die Wortanzahl pro Chunk durch definierte Parameter gesteuert wird.
@@ -202,5 +218,8 @@ Markdown-Format, was insbesondere für die Erstellung von Dokumentationen und di
 
 ###### Output: console
 
-Prints Markdown of given document into the console.
-All hardcoded.
+Schreibt Markdown Output von beliebigen File in die Konsole.
+
+Hinweis:
+
+    Am besten für Docx und Pptx Dokumente von den nicht LLM varianten.
