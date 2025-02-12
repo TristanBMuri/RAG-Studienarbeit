@@ -16,7 +16,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 class PDFMarkdownConverter:
     def __init__(
         self,
-        pdf_dir="Docs",
+        pdf_dir="../Docs",
         model="gemini-2.0-flash-exp",
         temperature=1, # Keep at 1 or test
         max_tokens=None,
@@ -53,7 +53,7 @@ class PDFMarkdownConverter:
         attachments = []
 
         # Create output directory if it doesn't exist
-        output_dir = "output_images"
+        output_dir = "../output_images"
         os.makedirs(output_dir, exist_ok=True)
 
         for page_num, page in enumerate(doc):

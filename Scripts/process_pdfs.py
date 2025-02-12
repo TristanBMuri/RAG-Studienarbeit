@@ -97,7 +97,7 @@ def process_pdfs(pdf_folder, output_dir):
 
 
 if __name__ == "__main__":
-    pdf_folder = "./Docs/"  # Input folder for PDFs
-    output_dir = "src/json"  # Directory to save JSON outputs
+    pdf_folder = "../Docs/"  # Input folder for PDFs
+    output_dir = "../src/json"  # Directory to save JSON outputs
     process_pdfs(pdf_folder, output_dir)
     logging.info("PDF processing completed.")

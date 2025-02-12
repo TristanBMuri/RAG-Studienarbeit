@@ -3,8 +3,8 @@ import logging
 from bs4 import BeautifulSoup
 
 # Hardcoded directories – update these paths to your actual folders
-INPUT_FOLDER = "./Docs"
-OUTPUT_FOLDER = "./src/Unstructured"
+INPUT_FOLDER = "../Docs"
+OUTPUT_FOLDER = "../src/Unstructured"
 
 # Configure logging
 logging.basicConfig(

@@ -158,7 +158,7 @@ def process_pdf(pdf_path, remove_headers=True):
     return all_chunks
 
 if __name__ == "__main__":
-    pdf_files = glob.glob("./Docs/*.pdf")
+    pdf_files = glob.glob("../Docs/*.pdf")
     all_documents = []
 
     for pdf_file in tqdm(pdf_files, desc="Processing PDFs"):
@@ -168,7 +168,7 @@ if __name__ == "__main__":
             print(f"Critical error processing {pdf_file}: {str(e)}")
             continue
 
-    with open("src/processed_chunks.json", "w") as f:
+    with open("../src/processed_chunks.json", "w") as f:
         json.dump(all_documents, f, indent=2)
 
     print(f"Successfully processed {len(all_documents)} chunks from {len(pdf_files)} PDFs")

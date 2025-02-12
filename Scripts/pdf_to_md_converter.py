@@ -6,8 +6,8 @@ from markitdown import MarkItDown
 def convert_pdfs_to_markdown():
     # Define source and destination directories
     md = MarkItDown()
-    docs_dir = Path("Docs")
-    md_dir = Path("src/md_versions")
+    docs_dir = Path("../Docs")
+    md_dir = Path("../src/md_versions")
 
     # Create destination directory if it doesn't exist
     md_dir.mkdir(parents=True, exist_ok=True)
