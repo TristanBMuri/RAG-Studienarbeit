@@ -3,8 +3,8 @@ from pathlib import Path
 from unstructured.partition.pdf import partition_pdf
 
 # Configuration
-INPUT_DIR = Path("/Docs/")  # Replace with your PDF folder path
-OUTPUT_DIR = Path("/src/Unstructured")  # Replace with your output folder path
+INPUT_DIR = Path("../Docs/")  # Replace with your PDF folder path
+OUTPUT_DIR = Path("../src/Unstructured")  # Replace with your output folder path
 
 # Create output directory if it doesn't exist
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

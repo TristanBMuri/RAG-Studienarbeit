@@ -3,11 +3,11 @@ from pathlib import Path
 from markitdown import MarkItDown
 
 
-def convert_pdfs_to_markdown():
+def convert_pdfs_to_markdown(input_dir = Path("../Docs"), output_dir = Path("../src/md_versions") ):
     # Define source and destination directories
     md = MarkItDown()
-    docs_dir = Path("../Docs")
-    md_dir = Path("../src/md_versions")
+    docs_dir = input_dir
+    md_dir = output_dir
 
     # Create destination directory if it doesn't exist
     md_dir.mkdir(parents=True, exist_ok=True)
