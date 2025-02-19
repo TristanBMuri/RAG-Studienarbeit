@@ -64,35 +64,28 @@ def load_embeddings(directory):
     return combined_array
 
 
-def initialize_vector_db_langchain(embeddings, collection_name="embeddings_collection"):
-    """
-    Initialize an in-memory vector DB using LangChain's Chroma integration
-    with the updated community packages.
-    """
-    # Create an embedding function using HuggingFaceEmbeddings
+def initialize_vector_db_langchain(embeddings, documents, collection_name="embeddings_collection"):
+    from langchain_huggingface import HuggingFaceEmbeddings
     embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-    # Create an in-memory Chroma vector store by setting persist_directory to None.
     vectorstore = Chroma(
         collection_name=collection_name,
         embedding_function=embedding_function,
         persist_directory=None
     )
 
-    # Prepare dummy texts since we only have embeddings.
     num_vectors = embeddings.shape[0]
     ids = [f"vec_{i}" for i in range(num_vectors)]
-    dummy_texts = [f"Document {i}" for i in range(num_vectors)]
-
-    # Add the precomputed embeddings to the underlying collection.
+    # Hier verwenden wir die echten Dokumenttexte, statt Dummy-Texte
     vectorstore._collection.add(
         ids=ids,
         embeddings=embeddings.tolist(),
         metadatas=[{"index": i} for i in range(num_vectors)],
-        documents=dummy_texts
+        documents=documents
     )
     print(f"Added {num_vectors} embeddings to the collection using LangChain's Chroma.")
     return vectorstore
+
 
 
 def query_vector_db_langchain(vectorstore, query, k=3):
