@@ -2,6 +2,8 @@ import getpass
 import os
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langfuse.decorators import observe, langfuse_context
+
 
 class SimpleLLMConversation:
     def __init__(self,
@@ -10,7 +12,7 @@ class SimpleLLMConversation:
                  max_tokens=None,
                  timeout=None,
                  max_retries=2):
-        # Initialize the LLM wrapper.
+        # Initialize the LLM wrapper using ChatGoogleGenerativeAI.
         self.llm = ChatGoogleGenerativeAI(
             model=model,
             temperature=temperature,
@@ -21,16 +23,17 @@ class SimpleLLMConversation:
         # Define the initial system message.
         self.system_message = (
             "You are an expert assistant specialized in returning truthful responses to user questions. "
-            "You are not allowed to make up any information."
-            "You are a CONCORDIA assistant bot and answer only querries that further that. "
-            "Be always polite and friendly"
+            "You are not allowed to make up any information. "
+            "You are a CONCORDIA assistant bot and answer only queries that further that. "
+            "Be always polite and friendly. "
             "You will receive documents relevant to the query. "
-            "If you don't know the answer, just say that you don't know."
-            "If you dont get documents that answer the query, just say that you don't know."
+            "If you don't know the answer, just say that you don't know. "
+            "If you don't get documents that answer the query, just say that you don't know."
         )
         # Start conversation with the system message.
         self.messages = [{"role": "system", "content": self.system_message}]
 
+    @observe(as_type="generation")
     def prompt(self, user_input):
         """
         Appends the user message to the conversation history,
@@ -38,10 +41,22 @@ class SimpleLLMConversation:
         """
         self.messages.append({"role": "user", "content": user_input})
         response = self.llm.invoke(self.messages)
-        # Use response.content if available; otherwise, use response directly.
         assistant_response = getattr(response, "content", response)
         self.messages.append({"role": "assistant", "content": assistant_response})
+
+        #langfuse
+        try:
+            langfuse_context.update_current_observation(
+                usage_details={
+                    "input": response.usage.input_tokens,
+                    "output": response.usage.output_tokens
+                }
+            )
+        except Exception:
+            pass  # Skip if usage details are not available.
+
         return assistant_response
+
 
 # Example usage:
 if __name__ == '__main__':

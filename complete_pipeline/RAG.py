@@ -1,5 +1,8 @@
 import getpass
 from pathlib import Path
+
+from langfuse.decorators import observe
+from langfuse.openai import openai
 from complete_pipeline.prompt.SimpleLLMConversation import SimpleLLMConversation
 from preprocessing_scripts.mark_any_down import mark_any_down
 from preprocessing_scripts.pdf_to_md_converter import convert_pdfs_to_markdown
@@ -7,7 +10,7 @@ from preprocessing_scripts.any_unstructured import *
 from vector_db.chroma import *
 from langchain_huggingface import HuggingFaceEmbeddings
 import numpy as np
-
+from langfuse import Langfuse
 
 def _md_preprocess(input_dir, output_dir):
     md_folder = Path(output_dir)
@@ -137,6 +140,13 @@ class RAG:
 if __name__ == "__main__":
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
+
+    # maybe not needed TODO:Check if needed
+    langfuse = Langfuse(
+        secret_key="sk-lf-202652e4-08b0-4d2c-af6b-050aff4ec1c4",
+        public_key="pk-lf-a617199e-4797-4466-8b3b-c14210b3ad21",
+        host="http://localhost:3000"
+    )
 
     rag = RAG()
     # Run preprocessing to generate markdown versions of documents
