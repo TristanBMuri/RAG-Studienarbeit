@@ -1,23 +1,32 @@
 from langfuse.decorators import observe, langfuse_context
 from langchain_google_genai import ChatGoogleGenerativeAI
+import os
+
+# Optionally enable Langfuse debug mode via an environment variable.
+os.environ["LANGFUSE_DEBUG"] = "true"
+
 
 @observe(as_type="generation")
 def gemini_completion(**kwargs):
     """
-    This function wraps a call to the Gemini model using ChatGoogleGenerativeAI.
-    It logs input parameters and (if available) usage details to Langfuse.
+    Wraps a call to the Gemini model (via ChatGoogleGenerativeAI) with Langfuse observation.
+    Logs input parameters and, if available, usage details.
     """
-    # Clone kwargs and extract logging information.
     kwargs_clone = kwargs.copy()
     messages = kwargs_clone.pop('messages', None)
     model = kwargs_clone.pop('model', None)
-    langfuse_context.update_current_observation(
-        input=messages,
-        model=model,
-        metadata=kwargs_clone
-    )
 
-    # Create a ChatGoogleGenerativeAI client with the desired parameters.
+    # Update the observation with input and metadata.
+    try:
+        langfuse_context.update_current_observation(
+            input=messages,
+            model=model,
+            metadata=kwargs_clone
+        )
+    except Exception as e:
+        print(f"Langfuse update observation error: {e}")
+
+    # Create the ChatGoogleGenerativeAI client.
     temperature = kwargs.get("temperature", 1)
     max_tokens = kwargs.get("max_tokens", None)
     timeout = kwargs.get("timeout", None)
@@ -30,22 +39,26 @@ def gemini_completion(**kwargs):
         max_retries=max_retries
     )
 
-    # Invoke the model using the provided messages.
+    # Invoke the Gemini model with the provided messages.
     response = llm.invoke(messages)
 
-    # Update Langfuse observation with usage details if available.
-    try:
-        langfuse_context.update_current_observation(
-            usage_details={
-                "input": response.usage.input_tokens,
-                "output": response.usage.output_tokens
-            }
-        )
-    except Exception:
-        pass  # Skip if usage details are not available.
+    # Update usage details only if the response includes them.
+    if hasattr(response, "usage"):
+        try:
+            langfuse_context.update_current_observation(
+                usage_details={
+                    "input": response.usage.input_tokens,
+                    "output": response.usage.output_tokens
+                }
+            )
+        except Exception as e:
+            print(f"Langfuse update usage details error: {e}")
+    else:
+        print("Response does not have usage attribute; skipping usage update.")
 
     # Return the generated text.
     return response.content if hasattr(response, "content") else response
+
 
 @observe()
 def main():
@@ -59,6 +72,7 @@ def main():
             {"role": "user", "content": "Hello, Gemini!"}
         ]
     )
+
 
 if __name__ == "__main__":
     result = main()
