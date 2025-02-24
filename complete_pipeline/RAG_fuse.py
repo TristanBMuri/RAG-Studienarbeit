@@ -98,6 +98,9 @@ class RAG_Fuse:
             except Exception as e:
                 print(f"Error reading {file}: {e}")
 
+        # Filter out invalid documents
+        documents = [doc for doc in documents if doc]
+
         print(f"Embedding {len(documents)} documents...")
         embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         embeddings = embedding_function.embed_documents(documents)
@@ -125,16 +128,14 @@ class RAG_Fuse:
         """
         if prompt is None:
             query_input = input("Enter your question: ")
-
-        query_input = prompt
+        else:
+            query_input = prompt
 
         if self.vectorstore is None:
             print("Vector store not initialized. Please run embbed() first.")
             return
 
         results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
-
-        # Extract context from results (assuming each result has a 'page_content' attribute)
         context = "\n".join([getattr(res, "page_content", str(res)) for res in results])
         response = self.chat.prompt(query_input, context)
         return response

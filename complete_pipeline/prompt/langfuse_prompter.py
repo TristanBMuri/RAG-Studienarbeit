@@ -93,7 +93,6 @@ class Langfuse_Prompter:
 
         response = self.llm.invoke(self.messages, config={"callbacks": [self.langfuse_callback_handler]})
 
-
         # Update usage details if available.
         if hasattr(response, "usage"):
             try:
