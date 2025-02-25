@@ -114,6 +114,7 @@ class RAG_Fuse:
         """
         Prompts for a search query and returns the n most relevant documents from the vector DB.
         """
+        # TODO: return reasoning and ranking for prompt
         if self.vectorstore is None:
             print("Vector store not initialized. Please run embbed() first.")
             return []
@@ -153,7 +154,7 @@ if __name__ == "__main__":
     rag.embbed()
 
     test_question = " Was is der unterschied zwischen NATURA und NATURA plus? "
-    re = rag.prompt(test_question)
+    #re = rag.prompt(test_question)
     # Interactive loop for querying and prompting
     while True:
         action = input("Enter action (query, prompt, or exit): ").lower()

@@ -1,18 +1,24 @@
 import getpass
 import os
 
+import langfuse
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse.decorators import observe, langfuse_context
 
+from langfuse.callback import CallbackHandler
+from langfuse import Langfuse
 
 class SimpleLLMConversation:
     def __init__(self,
-                 provider="ChatGoogleGenerativeAI",
                  model="gemini-2.0-flash-exp",
                  temperature=1,
                  max_tokens=None,
                  timeout=None,
                  max_retries=2):
+        # Langfuse
+        # Initialize Langfuse CallbackHandler for Langchain (tracing)
+        self.langfuse_callback_handler = CallbackHandler()
+
         # Initialize the LLM wrapper using ChatGoogleGenerativeAI.
         self.llm = ChatGoogleGenerativeAI(
             model=model,
@@ -51,7 +57,7 @@ class SimpleLLMConversation:
             )
         except Exception as e:
             print(f"Langfuse update observation error: {e}")
-        response = self.llm.invoke(self.messages)
+        response = self.llm.invoke(self.messages, config={"callbacks": [self.langfuse_callback_handler]})
 
         # Update usage details only if the response includes them.
         if hasattr(response, "usage"):

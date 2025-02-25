@@ -89,8 +89,6 @@ class Langfuse_Prompter:
             print(f"Langfuse update observation error: {e}")
 
         # Invoke the LLM with the conversation history.
-        # response = self.llm.invoke(self.messages)
-
         response = self.llm.invoke(self.messages, config={"callbacks": [self.langfuse_callback_handler]})
 
         # Update usage details if available.
