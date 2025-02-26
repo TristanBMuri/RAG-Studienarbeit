@@ -1,11 +1,11 @@
 from pathlib import Path
-
 import numpy as np
 import glob
 import os
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 def change_directory(directory):
@@ -89,17 +89,94 @@ def initialize_vector_db_langchain(embeddings, documents, collection_name="embed
     print(f"Added {num_vectors} embeddings to the collection using LangChain's Chroma.")
     return vector_store
 
+def initialize_chunked_vector_db_langchain(embeddings, markd_documents, collection_name="embeddings_collection"):
+    embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    vector_store = Chroma(
+        collection_name=collection_name,
+        embedding_function=embedding_function,
+        persist_directory=None
+    )
 
+    num_vectors = embeddings.shape[0]
+    ids = [f"vec_{i}" for i in range(num_vectors)]
+
+    batch_size = 160  # must be <= 166
+    for i in range(0, len(markd_documents), batch_size):
+        batch_ids = [f"vec_{j}" for j in range(i, min(i + batch_size, len(markd_documents)))]
+        # Use the passed embeddings variable (not test_embed)
+        batch_embeddings = embeddings[i:i + batch_size].tolist()
+        batch_metadatas = [doc.metadata for doc in markd_documents[i:i + batch_size]]
+        batch_texts = [doc.page_content for doc in markd_documents[i:i + batch_size]]
+
+        vector_store._collection.add(
+            ids=batch_ids,
+            embeddings=batch_embeddings,
+            metadatas=batch_metadatas,
+            documents=batch_texts
+        )
+
+    print(f"Added {num_vectors} embeddings to the collection using LangChain's Chroma.")
+    return vector_store
 
 
 def query_vector_db_langchain(vector_store, input_query, k=3):
-    """
-    Query the vector DB using LangChain's similarity_search interface.
-    """
-    # TO consider: Thresholding for relevance and up maximum amount of documents to return
     query_results = vector_store.similarity_search_with_score(input_query, k=k)
     print("Query results:", query_results)
     return query_results
+
+def query_documents_by_max_chunk(vector_store, input_query, k=520, top_n=3):
+    """
+    Query the vector store, group chunks by file (using 'file_name' metadata),
+    select the chunk with the highest similarity score from each file,
+    and return a list of (Document, score) tuples for the top_n documents.
+    """
+    query_results = vector_store.similarity_search_with_score(input_query, k=k)
+    grouped = {}
+    for doc, score in query_results:
+        file_name = doc.metadata.get("file_name", "unknown")
+        if file_name not in grouped or score > grouped[file_name]["score"]:
+            grouped[file_name] = {"doc": doc, "score": score}
+    sorted_docs = sorted(grouped.values(), key=lambda x: x["score"], reverse=True)
+    return [(item["doc"], item["score"]) for item in sorted_docs[:top_n]]
+
+def embed_chunks_from_directory(input_directory):
+    md_file_paths = get_md_file_paths(str(input_directory))
+    if not md_file_paths:
+        print(f"No markdown files found in {input_directory}.")
+        return
+
+    md_documents = []
+    # Use a text splitter to create smaller chunks.
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+
+    for file_path in md_file_paths:
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                md_content = file.read()
+            chunks = text_splitter.split_text(md_content)
+            for idx, chunk in enumerate(chunks):
+                doc = Document(
+                    page_content=chunk,
+                    metadata={
+                        "file_name": Path(file_path).name,
+                        "chunk_index": idx,
+                        "path": file_path
+                    }
+                )
+                md_documents.append(doc)
+        except Exception as e:
+            print(f"Error reading {file_path}: {e}")
+
+    print(f"Created {len(md_documents)} document chunks from {len(md_file_paths)} files.")
+    embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    embeddings = embedding_function.embed_documents([doc.page_content for doc in md_documents])
+    embeddings_array = np.array(embeddings)
+    return embeddings_array, md_documents
+
+def get_md_file_paths(directory):
+    file_paths = glob.glob(os.path.join(directory, '*.md'))
+    print(f"Found {len(file_paths)} markdown files.")
+    return file_paths
 
 def embed_from_directory(input_directory):
     md_files = list(input_directory.glob("*.md"))

@@ -116,21 +116,18 @@ class RagFuse:
             return
 
         # Retrieve results as (Document, score) tuples.
-        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
+        query_results = query_vector_db_langchain(self.vectorstore, query_input)
 
-        # Extract the context from page_content of each Document.
+        # Extract the context from the page_content of each Document.
         documents = [doc for doc, score in query_results]
         context = "\n".join([doc.page_content for doc in documents])
 
         # Build a metadata summary string for each result.
         meta_context_list = []
         for doc, score in query_results:
-            # Make a copy of metadata and remove any key that might include full page content.
             meta = doc.metadata.copy()
             meta.pop("page_content", None)
-            # Optionally, add the score for transparency.
             meta["score"] = score
-            # Convert the metadata dict to a string representation.
             meta_str = ", ".join(f"{k}: {v}" for k, v in meta.items())
             meta_context_list.append(meta_str)
         meta_context = "\n".join(meta_context_list)
@@ -140,19 +137,19 @@ class RagFuse:
         response = self.chat.prompt(query_input, qr_response)
         return response
 
-
 if __name__ == "__main__":
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
 
     rag = RagFuse()
     # Run preprocessing to generate markdown versions of documents
-    rag.preprocess()
+    rag.preprocess("skip")
 
     # Compute embeddings and initialize the vector DB
     rag.embed()
 
-    test_question = " Was is der unterschied zwischen NATURA und NATURA plus? "
+    test_question = " In welchen sprachen ist Easygest verfügbar? Und wo werden die Daten gespeichert? "
+    # test_question = " Was ist die Datenherkunft der Schnittstellenbeschreibungen? "
     re = rag.prompt(test_question)
     print(re)
     # Interactive loop for querying and prompting
