@@ -94,7 +94,6 @@ class RagFuse:
         """
         Prompts for a search query and returns the n most relevant documents from the vector DB.
         """
-        # TODO: return reasoning and ranking for prompt separate from page content
         if self.vectorstore is None:
             print("Vector store not initialized. Please run embed() first.")
             return []
@@ -116,10 +115,27 @@ class RagFuse:
             print("Vector store not initialized. Please run embed() first.")
             return
 
+        # Retrieve results as (Document, score) tuples.
         query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
-        context = "\n".join([getattr(res, "page_content", str(res)) for res in query_results])
-        # TODO: Implement meta data extraction from query results, delete page content in meta data
-        meta_context = ""
+
+        # Extract the context from page_content of each Document.
+        documents = [doc for doc, score in query_results]
+        context = "\n".join([doc.page_content for doc in documents])
+
+        # Build a metadata summary string for each result.
+        meta_context_list = []
+        for doc, score in query_results:
+            # Make a copy of metadata and remove any key that might include full page content.
+            meta = doc.metadata.copy()
+            meta.pop("page_content", None)
+            # Optionally, add the score for transparency.
+            meta["score"] = score
+            # Convert the metadata dict to a string representation.
+            meta_str = ", ".join(f"{k}: {v}" for k, v in meta.items())
+            meta_context_list.append(meta_str)
+        meta_context = "\n".join(meta_context_list)
+
+        # Build the QueryResult with the metadata context and the document context.
         qr_response = QueryResult(meta_context, context)
         response = self.chat.prompt(query_input, qr_response)
         return response
@@ -137,9 +153,11 @@ if __name__ == "__main__":
     rag.embed()
 
     test_question = " Was is der unterschied zwischen NATURA und NATURA plus? "
-    #re = rag.prompt(test_question)
+    re = rag.prompt(test_question)
+    print(re)
     # Interactive loop for querying and prompting
     while True:
+        break
         action = input("Enter action (query, prompt, or exit): ").lower()
         if action == "query":
             results = rag.query()

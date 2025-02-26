@@ -10,6 +10,29 @@ from langchain_core.prompts import ChatPromptTemplate
 from complete_pipeline.prompt.query_result import QueryResult
 
 
+def create_llm(config, max_tokens=None, timeout=None):
+    provider = config.get("provider")
+    if provider == "google":
+        return ChatGoogleGenerativeAI(
+            model=config["model"],
+            temperature=config["temperature"],
+            max_tokens=max_tokens,
+            timeout=timeout,
+            max_retries=config["max_retries"],
+        )
+    elif provider == "openai":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=config["model"],
+            temperature=config["temperature"],
+            max_tokens=max_tokens,
+            timeout=timeout,
+            max_retries=config["max_retries"],
+        )
+    else:
+        raise ValueError(f"Unsupported provider: {provider}")
+
+
 class LangfusePrompter:
     def __init__(self,
                  system_prompt_name="rag_system_prompt",
@@ -47,7 +70,7 @@ class LangfusePrompter:
                 "temperature": langfuse_prompt.config["temperature"],
                 "max_retries": langfuse_prompt.config["max_retries"],
             }
-            self.llm = self.create_llm(config, max_tokens=max_tokens, timeout=timeout)
+            self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
             print("LLM created using primary prompt config:", self.llm)
         except Exception as e:
             config = {
@@ -56,7 +79,7 @@ class LangfusePrompter:
                 "temperature": langfuse_system_prompt.config["temperature"],
                 "max_retries": langfuse_system_prompt.config["max_retries"],
             }
-            self.llm = self.create_llm(config, max_tokens=max_tokens, timeout=timeout)
+            self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
             print("LLM created using system prompt config:", self.llm)
 
         self.langfuse_callback_handler = langfuse_callback_handler
@@ -74,7 +97,8 @@ class LangfusePrompter:
         # Format the prompt template with both user_input and rag_context.
         formatted_user_message = self.langchain_prompt_template.format(
             user_input=user_input,
-            rag_context=vectordb_context
+            meta_data= vectordb_context.meta_context,
+            rag_context= vectordb_context.context,
         )
 
         # Append the formatted message to conversation history.
@@ -111,28 +135,6 @@ class LangfusePrompter:
         assistant_response = getattr(response, "content", response)
         self.messages.append({"role": "assistant", "content": assistant_response})
         return assistant_response
-
-    def create_llm(self, config, max_tokens=None, timeout=None):
-        provider = config.get("provider")
-        if provider == "google":
-            return ChatGoogleGenerativeAI(
-                model=config["model"],
-                temperature=config["temperature"],
-                max_tokens=max_tokens,
-                timeout=timeout,
-                max_retries=config["max_retries"],
-            )
-        elif provider == "openai":
-            from langchain_openai import ChatOpenAI
-            return ChatOpenAI(
-                model=config["model"],
-                temperature=config["temperature"],
-                max_tokens=max_tokens,
-                timeout=timeout,
-                max_retries=config["max_retries"],
-            )
-        else:
-            raise ValueError(f"Unsupported provider: {provider}")
 
 
 # Example usage:

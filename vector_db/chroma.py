@@ -5,6 +5,7 @@ import glob
 import os
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain.docstore.document import Document
 
 
 def change_directory(directory):
@@ -66,10 +67,8 @@ def load_embeddings(embeddings_directory):
     return combined_array
 
 
-def initialize_vector_db_langchain(embeddings, input_documents, collection_name="embeddings_collection"):
-    from langchain_huggingface import HuggingFaceEmbeddings
+def initialize_vector_db_langchain(embeddings, documents, collection_name="embeddings_collection"):
     embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-
     vector_store = Chroma(
         collection_name=collection_name,
         embedding_function=embedding_function,
@@ -79,14 +78,17 @@ def initialize_vector_db_langchain(embeddings, input_documents, collection_name=
     num_vectors = embeddings.shape[0]
     ids = [f"vec_{i}" for i in range(num_vectors)]
 
+    # Use the metadata already attached to each Document.
+    # Change eventually to not access _collection directly
     vector_store._collection.add(
         ids=ids,
         embeddings=embeddings.tolist(),
-        metadatas=[{"index": i} for i in range(num_vectors)],
-        documents=input_documents
+        metadatas=[doc.metadata for doc in documents],
+        documents=[doc.page_content for doc in documents]
     )
     print(f"Added {num_vectors} embeddings to the collection using LangChain's Chroma.")
     return vector_store
+
 
 
 
@@ -110,16 +112,18 @@ def embed_from_directory(input_directory):
         try:
             with open(f, "r", encoding="utf-8") as b:
                 md_content = b.read()
-                md_documents.append(md_content)
+                # Create a Document with metadata including file name.
+                doc = Document(
+                    page_content=md_content,
+                    metadata={"file_name": f.name, "path": str(f)}
+                )
+                md_documents.append(doc)
         except Exception as e:
             print(f"Error reading {f}: {e}")
 
-    # Filter out invalid documents
-    md_documents = [doc for doc in md_documents if doc]
-
     print(f"Embedding {len(md_documents)} documents...")
     embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    embeddings = embedding_function.embed_documents(md_documents)
+    embeddings = embedding_function.embed_documents([doc.page_content for doc in md_documents])
     embeddings_array = np.array(embeddings)
     return embeddings_array, md_documents
 
