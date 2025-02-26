@@ -7,8 +7,10 @@ from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 from langchain_core.prompts import ChatPromptTemplate
 
+from complete_pipeline.prompt.query_result import QueryResult
 
-class Langfuse_Prompter:
+
+class LangfusePrompter:
     def __init__(self,
                  system_prompt_name="rag_system_prompt",
                  prompt_name="rag_prompt",
@@ -63,7 +65,7 @@ class Langfuse_Prompter:
         self.messages = [{"role": "system", "content": self.system_message}]
 
     @observe(as_type="generation")
-    def prompt(self, user_input, vectordb_context):
+    def prompt(self, user_input, vectordb_context: QueryResult):
         """
         Formats the prompt by combining the user input with the retrieved RAG context
         (using the Langfuse prompt template), appends it to the conversation history,
@@ -140,11 +142,13 @@ if __name__ == '__main__':
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google API key: ")
 
     # Create an instance of Langfuse_Prompter.
-    conv = Langfuse_Prompter()
+    conv = LangfusePrompter()
 
     # Define the user query and the RAG context (for example, retrieved from a vector DB).
     user_query = "Ayo who are you?"
-    rag_context = "I retrieved this context from the vector database about your capabilities."
+    dummy_rag_context = QueryResult(
+        "no meta",
+     "I retrieved this context from the vector database about your capabilities.")
 
     # Get and print the assistant's response.
-    print("Assistant Response:\n", conv.prompt(user_query, rag_context))
+    print("Assistant Response:\n", conv.prompt(user_query, dummy_rag_context))

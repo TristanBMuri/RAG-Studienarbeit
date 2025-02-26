@@ -1,7 +1,8 @@
 import getpass
 from pathlib import Path
 from complete_pipeline.prompt.SimpleLLMConversation import SimpleLLMConversation
-from complete_pipeline.prompt.langfuse_prompter import Langfuse_Prompter
+from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
+from complete_pipeline.prompt.query_result import QueryResult
 from preprocessing_scripts.mark_any_down import mark_any_down
 from preprocessing_scripts.pdf_to_md_converter import convert_pdfs_to_markdown
 from preprocessing_scripts.any_unstructured import *
@@ -25,12 +26,12 @@ def _md_preprocess(input_dir, output_dir):
             mark_any_down(each_file, output_dir)
 
 
-class RAG_Fuse:
+class RagFuse:
     def __init__(self):
         self.model = None  # Placeholder for an LLM model
         self.md_folder = Path("../src/md_versions")
         self.vectorstore = None
-        self.chat = Langfuse_Prompter()
+        self.chat = LangfusePrompter()
 
     def preprocess(self, settings = "d"):
         # Prompt user for input and output directories
@@ -82,47 +83,26 @@ class RAG_Fuse:
                 _md_preprocess(input_dir, output_dir)
                 self.md_folder = output_dir
 
-    def embbed(self):
-        # Gather all markdown files from the markdown folder.
-        markdown_files = list(self.md_folder.glob("*.md"))
-        if not markdown_files:
-            print(f"No markdown files found in {self.md_folder}.")
-            return
-
-        documents = []
-        for file in markdown_files:
-            try:
-                with open(file, "r", encoding="utf-8") as f:
-                    content = f.read()
-                    documents.append(content)
-            except Exception as e:
-                print(f"Error reading {file}: {e}")
-
-        # Filter out invalid documents
-        documents = [doc for doc in documents if doc]
-
-        print(f"Embedding {len(documents)} documents...")
-        embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        embeddings = embedding_function.embed_documents(documents)
-        embeddings_array = np.array(embeddings)
+    def embed(self):
+        embeddings_array, md_documents = embed_from_directory(self.md_folder)
 
         # Hier übergeben wir sowohl embeddings_array als auch documents
-        self.vectorstore = initialize_vector_db_langchain(embeddings_array, documents)
+        self.vectorstore = initialize_vector_db_langchain(embeddings_array, md_documents)
         print("Vector store initialized.")
 
     def query(self):
         """
         Prompts for a search query and returns the n most relevant documents from the vector DB.
         """
-        # TODO: return reasoning and ranking for prompt
+        # TODO: return reasoning and ranking for prompt separate from page content
         if self.vectorstore is None:
-            print("Vector store not initialized. Please run embbed() first.")
+            print("Vector store not initialized. Please run embed() first.")
             return []
         query_input = input("Enter your search query: ")
-        results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
-        return results
+        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
+        return query_results
 
-    def prompt(self, prompt= None):
+    def prompt(self, prompt=None):
         """
         Takes a user question, retrieves context from the vector DB,
         and simulates sending it to an LLM to generate a response.
@@ -133,12 +113,15 @@ class RAG_Fuse:
             query_input = prompt
 
         if self.vectorstore is None:
-            print("Vector store not initialized. Please run embbed() first.")
+            print("Vector store not initialized. Please run embed() first.")
             return
 
-        results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
-        context = "\n".join([getattr(res, "page_content", str(res)) for res in results])
-        response = self.chat.prompt(query_input, context)
+        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
+        context = "\n".join([getattr(res, "page_content", str(res)) for res in query_results])
+        # TODO: Implement meta data extraction from query results, delete page content in meta data
+        meta_context = ""
+        qr_response = QueryResult(meta_context, context)
+        response = self.chat.prompt(query_input, qr_response)
         return response
 
 
@@ -146,12 +129,12 @@ if __name__ == "__main__":
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
 
-    rag = RAG_Fuse()
+    rag = RagFuse()
     # Run preprocessing to generate markdown versions of documents
     rag.preprocess()
 
     # Compute embeddings and initialize the vector DB
-    rag.embbed()
+    rag.embed()
 
     test_question = " Was is der unterschied zwischen NATURA und NATURA plus? "
     #re = rag.prompt(test_question)
