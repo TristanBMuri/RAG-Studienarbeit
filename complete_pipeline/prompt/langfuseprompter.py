@@ -6,6 +6,7 @@ from langfuse.decorators import observe, langfuse_context
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 from langchain_core.prompts import ChatPromptTemplate
+import uuid
 
 from complete_pipeline.prompt.query_result import QueryResult
 
@@ -87,22 +88,56 @@ class LangfusePrompter:
         # Start conversation history with the system message.
         self.messages = [{"role": "system", "content": self.system_message}]
 
+    # Remove this decorator
+    # @observe(as_type="generation")
+    def prompt(self, user_input: str, vectordb_context: QueryResult, session_id=None):
+        if session_id:
+            self.langfuse_callback_handler.session_id = session_id
+
+        formatted_user_message = self.langchain_prompt_template.format(
+            user_input=user_input,
+            meta_data=vectordb_context.meta_context,
+            rag_context=vectordb_context.context,
+        )
+        self.messages.append({"role": "user", "content": formatted_user_message})
+
+        try:
+            langfuse_context.update_current_observation(
+                input=self.messages,
+                model=self.llm.model,
+                metadata=self.llm
+            )
+        except Exception as e:
+            print(f"Langfuse update observation error: {e}")
+
+        response = self.llm.invoke(self.messages, config={"callbacks": [self.langfuse_callback_handler]})
+
+        if hasattr(response, "usage"):
+            try:
+                langfuse_context.update_current_observation(
+                    usage_details={
+                        "input": response.usage.input_tokens,
+                        "output": response.usage.output_tokens
+                    }
+                )
+            except Exception as e:
+                print(f"Langfuse update usage details error: {e}")
+        else:
+            print("Response does not have usage attribute; skipping usage update.")
+
+        assistant_response = getattr(response, "content", response)
+        self.messages.append({"role": "assistant", "content": assistant_response})
+        return assistant_response
+
     @observe(as_type="generation")
-    def prompt(self, user_input, vectordb_context: QueryResult):
+    def _dev_prompt(self, test_input: str, custom_handler):
         """
         Formats the prompt by combining the user input with the retrieved RAG context
         (using the Langfuse prompt template), appends it to the conversation history,
         invokes the LLM, and returns the assistant's response.
         """
-        # Format the prompt template with both user_input and rag_context.
-        formatted_user_message = self.langchain_prompt_template.format(
-            user_input=user_input,
-            meta_data= vectordb_context.meta_context,
-            rag_context= vectordb_context.context,
-        )
-
         # Append the formatted message to conversation history.
-        self.messages.append({"role": "user", "content": formatted_user_message})
+        self.messages.append({"role": "user", "content": test_input})
 
         # (Optional) update Langfuse observation.
         try:
@@ -115,7 +150,7 @@ class LangfusePrompter:
             print(f"Langfuse update observation error: {e}")
 
         # Invoke the LLM with the conversation history.
-        response = self.llm.invoke(self.messages, config={"callbacks": [self.langfuse_callback_handler]})
+        response = self.llm.invoke(self.messages, config={"callbacks": [custom_handler]})
 
         # Update usage details if available.
         if hasattr(response, "usage"):
@@ -130,10 +165,9 @@ class LangfusePrompter:
                 print(f"Langfuse update usage details error: {e}")
         else:
             print("Response does not have usage attribute; skipping usage update.")
-
-        # Get the content of the assistant's response.
         assistant_response = getattr(response, "content", response)
         self.messages.append({"role": "assistant", "content": assistant_response})
+
         return assistant_response
 
 
@@ -152,5 +186,7 @@ if __name__ == '__main__':
         "no meta",
      "I retrieved this context from the vector database about your capabilities.")
 
+    random_id = uuid.uuid4().hex
+
     # Get and print the assistant's response.
-    print("Assistant Response:\n", conv.prompt(user_query, dummy_rag_context))
+    print("Assistant Response:\n", conv.prompt(user_query, dummy_rag_context, random_id))

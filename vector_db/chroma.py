@@ -6,6 +6,7 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langfuse.decorators import observe, langfuse_context
 
 
 def change_directory(directory):
@@ -98,7 +99,6 @@ def initialize_chunked_vector_db_langchain(embeddings, markd_documents, collecti
     )
 
     num_vectors = embeddings.shape[0]
-    ids = [f"vec_{i}" for i in range(num_vectors)]
 
     batch_size = 160  # must be <= 166
     for i in range(0, len(markd_documents), batch_size):
@@ -119,8 +119,25 @@ def initialize_chunked_vector_db_langchain(embeddings, markd_documents, collecti
     return vector_store
 
 
-def query_vector_db_langchain(vector_store, input_query, k=3):
+@observe(as_type="context_retrieval")
+def query_vector_db_langchain(vector_store, input_query, k=3, session_id=None):
     query_results = vector_store.similarity_search_with_score(input_query, k=k)
+
+    if session_id:
+        langfuse_context.update_current_trace(
+            session_id=session_id
+    )
+
+    # (Optional) update Langfuse observation.
+    try:
+        langfuse_context.update_current_observation(
+            input=input_query,
+            output=query_results,
+            metadata="Vector query results using LangChain's Chroma."
+        )
+    except Exception as e:
+        print(f"Langfuse update observation error: {e}")
+
     print("Query results:", query_results)
     return query_results
 

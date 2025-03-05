@@ -10,6 +10,11 @@ from vector_db.chroma import *
 from langchain_huggingface import HuggingFaceEmbeddings
 import numpy as np
 from langfuse import Langfuse
+import uuid
+
+def _generate_session_id():
+    return uuid.uuid4().hex
+
 
 def _md_preprocess(input_dir, output_dir):
     md_folder = Path(output_dir)
@@ -32,13 +37,14 @@ class RagFuse:
         self.md_folder = Path("../src/md_versions")
         self.vectorstore = None
         self.chat = LangfusePrompter()
+        self.sessionId = _generate_session_id()
 
     def preprocess(self, settings = "d"):
         # Prompt user for input and output directories
-        if settings != "d":
+        if not settings:
             settings = input("Set the preprocessing settings (c for custom, d for default and skip to skip): ")
 
-        if settings == "skip":
+        if settings == "skip" or settings == "s":
             self.md_folder = Path("../src/md_versions")
             return None
 
@@ -116,7 +122,7 @@ class RagFuse:
             return
 
         # Retrieve results as (Document, score) tuples.
-        query_results = query_vector_db_langchain(self.vectorstore, query_input)
+        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3, session_id=self.sessionId)
 
         # Extract the context from the page_content of each Document.
         documents = [doc for doc, score in query_results]
@@ -132,9 +138,10 @@ class RagFuse:
             meta_context_list.append(meta_str)
         meta_context = "\n".join(meta_context_list)
 
+
         # Build the QueryResult with the metadata context and the document context.
         qr_response = QueryResult(meta_context, context)
-        response = self.chat.prompt(query_input, qr_response)
+        response = self.chat.prompt(query_input, qr_response, session_id=self.sessionId)
         return response
 
 if __name__ == "__main__":
@@ -143,13 +150,13 @@ if __name__ == "__main__":
 
     rag = RagFuse()
     # Run preprocessing to generate markdown versions of documents
-    rag.preprocess("skip")
+    rag.preprocess("s")
 
     # Compute embeddings and initialize the vector DB
     rag.embed()
 
-    test_question = " In welchen sprachen ist Easygest verfügbar? Und wo werden die Daten gespeichert? "
-    # test_question = " Was ist die Datenherkunft der Schnittstellenbeschreibungen? "
+    # test_question = " In welchen sprachen ist Easygest verfügbar? Und wo werden die Daten gespeichert? "
+    test_question = " Was ist die Datenherkunft der Schnittstellenbeschreibungen? "
     re = rag.prompt(test_question)
     print(re)
     # Interactive loop for querying and prompting
