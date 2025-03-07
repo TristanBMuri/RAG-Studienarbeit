@@ -2,13 +2,19 @@ from langfuse import Langfuse
 
 # Initialize the Langfuse client (ensure your environment variables for LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, and LANGFUSE_HOST are set)
 langfuse = Langfuse()
+langfuse_prompt = langfuse.get_prompt("Test_prompt")
 
 def handle_user_request(user_query):
     # Start a parent trace for the overall RAG request with initial metadata.
     parent_trace = langfuse.trace(
         name="RAG Request",
-        metadata={"user_query": user_query}
+        input=user_query,
+        prompt = "Test_prompt",
+        metadata={
+            "user_query": user_query,
+      }
     )
+    parent_trace.generation(prompt=langfuse_prompt)
     try:
         # ----------------------------
         # Document Retrieval Span
@@ -18,7 +24,9 @@ def handle_user_request(user_query):
             # Retrieve relevant documents from your vector store or knowledge base.
             documents = retrieve_documents(user_query)
             # Log the number of documents retrieved.
+            retrieval_span.update(input="Dummy Input")
             retrieval_span.update(metadata={"docs_retrieved": len(documents)})
+            retrieval_span.update(output="Dummy Output")
         except Exception as e:
             # Record any error by adding an "error" key to metadata.
             retrieval_span.update(metadata={"error": f"Retrieval Error: {str(e)}"})
@@ -37,6 +45,10 @@ def handle_user_request(user_query):
                 "token_usage": response.token_usage,
                 "response_length": len(response.text)
             })
+            generation_span.update(
+                input="Dummy Input",
+                output="Dummy Output"
+            )
         except Exception as e:
             generation_span.update(metadata={"error": f"Generation Error: {str(e)}"})
             # Re-raise or handle as needed.
@@ -44,7 +56,7 @@ def handle_user_request(user_query):
         # ----------------------------
         # Update Parent Trace
         # ----------------------------
-        parent_trace.update(metadata={"final_response": response.text})
+        parent_trace.update(output= response.text, metadata={"final_response": response.text})
     except Exception as e:
         # If an error occurs at the trace level, update metadata.
         parent_trace.update(metadata={"error": f"Parent Trace Error: {str(e)}"})

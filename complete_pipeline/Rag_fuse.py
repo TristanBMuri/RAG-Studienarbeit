@@ -1,20 +1,14 @@
 import getpass
-from pathlib import Path
-from complete_pipeline.prompt.SimpleLLMConversation import SimpleLLMConversation
 from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
 from complete_pipeline.prompt.query_result import QueryResult
 from preprocessing_scripts.mark_any_down import mark_any_down
 from preprocessing_scripts.pdf_to_md_converter import convert_pdfs_to_markdown
 from preprocessing_scripts.any_unstructured import *
 from vector_db.chroma import *
-from langchain_huggingface import HuggingFaceEmbeddings
-import numpy as np
-from langfuse import Langfuse
 import uuid
 
 def _generate_session_id():
     return uuid.uuid4().hex
-
 
 def _md_preprocess(input_dir, output_dir):
     md_folder = Path(output_dir)
