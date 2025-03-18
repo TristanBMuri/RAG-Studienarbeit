@@ -121,11 +121,10 @@ class RagFuse:
         else:
             query_input = prompt
 
-        trace = self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"])
-
-        # Todo Evaluate if needed with manual tracing
-        if custom_handler:
-            self.chat = LangfusePrompter(custom_handler=custom_handler)
+        if custom_handler is None:
+            trace = self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"])
+        else:
+            trace = custom_handler.trace
 
         # Todo change this
         if self.vectorstore is None:
@@ -177,6 +176,7 @@ class RagFuse:
         usage_details = {
             "input": usage_metadata.get("input_tokens", 0),
             "output": usage_metadata.get("output_tokens", 0),
+            # While interesting langfuse just counts the token amount together which isnt a true amount
             #"token_usage": usage_metadata.get("total_tokens", 0),
             #"prompt_tokens": usage_metadata.get("input_tokens", 0),
             #"completion_tokens": usage_metadata.get("output_tokens", 0),

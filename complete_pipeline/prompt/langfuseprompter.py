@@ -135,15 +135,6 @@ class LangfusePrompter:
         )
         self.messages.append({"role": "user", "content": formatted_user_message})
 
-        # Start a Langfuse trace for the LLM Generation request.
-        parent_trace = self.langfuse.trace(
-            name="LLM Request",
-            input=formatted_user_message,
-            prompt="rag_prompt",
-            metadata={"user_query": user_input}
-        )
-        generation_span = parent_trace.span(name="LLM Generation")
-
         try:
             langfuse_context.update_current_observation(
                 input=self.messages,
@@ -172,8 +163,6 @@ class LangfusePrompter:
         self.messages.append({"role": "assistant", "content": assistant_response})
 
         # Log the generation span and update the parent trace.
-        generation_span.update(output=assistant_response, metadata={"token_usage": getattr(response, 'usage', {})})
-        parent_trace.update(output=assistant_response, metadata={"manual_trace_data": "Manual, Parent trace"})
         self.langfuse.flush()
 
         if full_response:
