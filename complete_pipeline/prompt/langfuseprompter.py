@@ -39,29 +39,39 @@ class LangfusePrompter:
                  system_prompt_name="rag_system_prompt",
                  prompt_name="rag_prompt",
                  max_tokens=None,
-                 timeout=None):
+                 timeout=None,
+                 custom_handler=None,
+                 separate_sys_prompts=False):
         # Initialize Langfuse client (prompt management)
-        langfuse = Langfuse()
+        self.langfuse = Langfuse()
+        self.messages = []
 
         # Initialize Langfuse CallbackHandler for Langchain (tracing)
-        langfuse_callback_handler = CallbackHandler()
+        if custom_handler:
+            langfuse_callback_handler = custom_handler
+        else:
+            langfuse_callback_handler = CallbackHandler()
 
         # Verify that Langfuse is configured correctly
-        assert langfuse.auth_check()
+        assert self.langfuse.auth_check()
         assert langfuse_callback_handler.auth_check()
 
         # Retrieve prompts from Langfuse
-        langfuse_prompt = langfuse.get_prompt(prompt_name)
-        langfuse_system_prompt = langfuse.get_prompt(system_prompt_name)
+        langfuse_prompt = self.langfuse.get_prompt(prompt_name)
 
+        # System prompt set up
+        langfuse_system_prompt = None
+        if separate_sys_prompts:
+            langfuse_system_prompt = self.langfuse.get_prompt(system_prompt_name)
+            self.system_message = langfuse_system_prompt.prompt
+            self.messages = [{"role": "system", "content": self.system_message}]
+
+        # todo adjust so both prompt versions work
         # Create LangChain prompt templates from the Langfuse prompts
         self.langchain_prompt_template = ChatPromptTemplate.from_template(
             langfuse_prompt.get_langchain_prompt(),
             metadata={"langfuse_prompt": langfuse_prompt},
         )
-
-        # The system prompt (which might be a long instruction) is kept separate.
-        self.system_message = langfuse_system_prompt.prompt
 
         # Try to create the LLM using the main prompt config; if that fails, use the system prompt config.
         try:
@@ -74,23 +84,23 @@ class LangfusePrompter:
             self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
             print("LLM created using primary prompt config:", self.llm)
         except Exception as e:
-            config = {
-                "provider": str(langfuse_system_prompt.config.get("provider", "google")),
-                "model": langfuse_system_prompt.config["model"],
-                "temperature": langfuse_system_prompt.config["temperature"],
-                "max_retries": langfuse_system_prompt.config["max_retries"],
-            }
-            self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
-            print("LLM created using system prompt config:", self.llm)
+            if separate_sys_prompts:
+                config = {
+                    "provider": str(langfuse_system_prompt.config.get("provider", "google")),
+                    "model": langfuse_system_prompt.config["model"],
+                    "temperature": langfuse_system_prompt.config["temperature"],
+                    "max_retries": langfuse_system_prompt.config["max_retries"],
+                }
+                self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
+                print("LLM created using system prompt config:", self.llm)
 
         self.langfuse_callback_handler = langfuse_callback_handler
 
         # Start conversation history with the system message.
-        self.messages = [{"role": "system", "content": self.system_message}]
 
     # Remove this decorator
     # @observe(as_type="generation")
-    def prompt(self, user_input: str, vectordb_context: QueryResult, session_id=None):
+    def prompt_deprecated(self, user_input, vectordb_context: QueryResult, session_id=None, full_response=False):
         if session_id:
             self.langfuse_callback_handler.session_id = session_id
 
@@ -100,6 +110,15 @@ class LangfusePrompter:
             rag_context=vectordb_context.context,
         )
         self.messages.append({"role": "user", "content": formatted_user_message})
+
+        # Start a Langfuse trace for the LLM Generation request.
+        parent_trace = self.langfuse.trace(
+            name="LLM Request",
+            input=formatted_user_message,
+            prompt="rag_prompt",
+            metadata={"user_query": user_input}
+        )
+        generation_span = parent_trace.span(name="LLM Generation")
 
         try:
             langfuse_context.update_current_observation(
@@ -127,48 +146,37 @@ class LangfusePrompter:
 
         assistant_response = getattr(response, "content", response)
         self.messages.append({"role": "assistant", "content": assistant_response})
-        return assistant_response
 
-    @observe(as_type="generation")
-    def _dev_prompt(self, test_input: str, custom_handler):
-        """
-        Formats the prompt by combining the user input with the retrieved RAG context
-        (using the Langfuse prompt template), appends it to the conversation history,
-        invokes the LLM, and returns the assistant's response.
-        """
-        # Append the formatted message to conversation history.
-        self.messages.append({"role": "user", "content": test_input})
+        # Log the generation span and update the parent trace.
+        generation_span.update(output=assistant_response, metadata={"token_usage": getattr(response, 'usage', {})})
+        parent_trace.update(output=assistant_response, metadata={"manual_trace_data": "Manual, Parent trace"})
+        self.langfuse.flush()
 
-        # (Optional) update Langfuse observation.
-        try:
-            langfuse_context.update_current_observation(
-                input=self.messages,
-                model=self.llm.model,
-                metadata=self.llm
-            )
-        except Exception as e:
-            print(f"Langfuse update observation error: {e}")
-
-        # Invoke the LLM with the conversation history.
-        response = self.llm.invoke(self.messages, config={"callbacks": [custom_handler]})
-
-        # Update usage details if available.
-        if hasattr(response, "usage"):
-            try:
-                langfuse_context.update_current_observation(
-                    usage_details={
-                        "input": response.usage.input_tokens,
-                        "output": response.usage.output_tokens
-                    }
-                )
-            except Exception as e:
-                print(f"Langfuse update usage details error: {e}")
+        if full_response:
+            return response
         else:
-            print("Response does not have usage attribute; skipping usage update.")
+            return assistant_response
+
+    def prompt(self, user_input, vectordb_context: QueryResult, session_id=None, full_response=False):
+        formatted_user_message = self.langchain_prompt_template.format(
+            user_input=user_input,
+            meta_data=vectordb_context.meta_context,
+            rag_context=vectordb_context.context,
+        )
+        self.messages.append({"role": "user", "content": formatted_user_message})
+
+        response = self.llm.invoke(self.messages)
+
         assistant_response = getattr(response, "content", response)
         self.messages.append({"role": "assistant", "content": assistant_response})
 
-        return assistant_response
+        if full_response:
+            return response
+        else:
+            return assistant_response
+
+    def get_model(self) -> str:
+        return self.llm.model
 
 
 # Example usage:

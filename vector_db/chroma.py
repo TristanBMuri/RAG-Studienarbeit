@@ -119,24 +119,8 @@ def initialize_chunked_vector_db_langchain(embeddings, markd_documents, collecti
     return vector_store
 
 
-@observe(as_type="context_retrieval")
 def query_vector_db_langchain(vector_store, input_query, k=3, session_id=None):
     query_results = vector_store.similarity_search_with_score(input_query, k=k)
-
-    if session_id:
-        langfuse_context.update_current_trace(
-            session_id=session_id
-    )
-
-    # (Optional) update Langfuse observation.
-    try:
-        langfuse_context.update_current_observation(
-            input=input_query,
-            output=query_results,
-            metadata="Vector query results using LangChain's Chroma."
-        )
-    except Exception as e:
-        print(f"Langfuse update observation error: {e}")
 
     print("Query results:", query_results)
     return query_results
