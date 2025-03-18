@@ -59,21 +59,45 @@ class LangfusePrompter:
         # Retrieve prompts from Langfuse
         langfuse_prompt = self.langfuse.get_prompt(prompt_name)
 
+        # Helper: Convert prompt template to string if it's a list.
+        def get_template_string(prompt_obj):
+            template_value = prompt_obj.get_langchain_prompt()
+            if isinstance(template_value, list):
+                # Join each item's "content" if available; otherwise, convert to string.
+                template_value = "\n".join(
+                    [msg.get("content", str(msg)) if isinstance(msg, dict) else str(msg) for msg in template_value]
+                )
+            return template_value
+
         # System prompt set up
-        langfuse_system_prompt = None
         if separate_sys_prompts:
             langfuse_system_prompt = self.langfuse.get_prompt(system_prompt_name)
             self.system_message = langfuse_system_prompt.prompt
             self.messages = [{"role": "system", "content": self.system_message}]
+            # Create LangChain prompt template from the Langfuse prompt.
+            template_str = get_template_string(langfuse_prompt)
+            self.langchain_prompt_template = ChatPromptTemplate.from_template(
+                template_str,
+                metadata={"langfuse_prompt": langfuse_prompt},
+            )
+        else:
+            # Combined prompt handling.
+            # Extract system message from langfuse_prompt.prompt if it is a list.
+            if isinstance(langfuse_prompt.prompt, list):
+                system_messages = [msg["content"] for msg in langfuse_prompt.prompt if msg.get("role") == "system"]
+                self.system_message = system_messages[0] if system_messages else ""
+            else:
+                self.system_message = langfuse_prompt.prompt
+            self.messages = [{"role": "system", "content": self.system_message}]
+            # Create LangChain prompt template from the Langfuse prompt.
+            template_str = get_template_string(langfuse_prompt)
+            self.langchain_prompt_template = ChatPromptTemplate.from_template(
+                template_str,
+                metadata={"langfuse_prompt": langfuse_prompt},
+            )
 
-        # todo adjust so both prompt versions work
-        # Create LangChain prompt templates from the Langfuse prompts
-        self.langchain_prompt_template = ChatPromptTemplate.from_template(
-            langfuse_prompt.get_langchain_prompt(),
-            metadata={"langfuse_prompt": langfuse_prompt},
-        )
-
-        # Try to create the LLM using the main prompt config; if that fails, use the system prompt config.
+        # Try to create the LLM using the main prompt config;
+        # if that fails, use the system prompt config (only for separate_sys_prompts).
         try:
             config = {
                 "provider": str(langfuse_prompt.config["provider"]),
@@ -93,12 +117,12 @@ class LangfusePrompter:
                 }
                 self.llm = create_llm(config, max_tokens=max_tokens, timeout=timeout)
                 print("LLM created using system prompt config:", self.llm)
+            else:
+                raise e
 
         self.langfuse_callback_handler = langfuse_callback_handler
 
-        # Start conversation history with the system message.
-
-    # Remove this decorator
+    # Remove this decorator if not needed.
     # @observe(as_type="generation")
     def prompt_deprecated(self, user_input, vectordb_context: QueryResult, session_id=None, full_response=False):
         if session_id:
@@ -185,14 +209,15 @@ if __name__ == '__main__':
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google API key: ")
 
-    # Create an instance of Langfuse_Prompter.
+    # Create an instance of LangfusePrompter.
     conv = LangfusePrompter()
 
     # Define the user query and the RAG context (for example, retrieved from a vector DB).
     user_query = "Ayo who are you?"
     dummy_rag_context = QueryResult(
         "no meta",
-     "I retrieved this context from the vector database about your capabilities.")
+        "I retrieved this context from the vector database about your capabilities."
+    )
 
     random_id = uuid.uuid4().hex
 
