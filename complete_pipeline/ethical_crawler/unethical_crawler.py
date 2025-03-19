@@ -6,50 +6,39 @@ from collections import deque
 import time
 
 # Configuration
-base_url = "https://www.concordia.ch"  # e.g., "https://example.com"
+base_url = "https://www.concordia.ch"
 output_dir = "company_pdfs"
-max_depth = 3  # How many link layers to explore (adjust as needed)
-delay = 1  # Seconds between requests to be polite
-
+max_depth = 3
+delay = 1
 headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyCrawler/1.0)'}
 
 # Initialize
 visited_urls = set()
 pdf_urls = set()
-queue = deque([(base_url, 0)])  # (url, depth)
+queue = deque([(base_url, 0)])
 domain = urlparse(base_url).netloc
 
 
 def is_valid(url):
-    """Check if URL belongs to the same domain"""
     parsed = urlparse(url)
     return parsed.netloc == domain
 
 
 def is_pdf(url):
-    """Check if URL points to PDF"""
     return urlparse(url).path.lower().endswith('.pdf')
 
 
 def download_pdf(url):
-    """Download PDF with deduplication handling"""
     try:
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
             filename = os.path.basename(urlparse(url).path)
             filepath = os.path.join(output_dir, filename)
 
-            # Handle duplicates
-            if os.path.exists(filepath):
-                base, ext = os.path.splitext(filename)
-                counter = 1
-                while os.path.exists(filepath):
-                    filepath = os.path.join(output_dir, f"{base}_{counter}{ext}")
-                    counter += 1
-
+            # Overwrite existing file without checking
             with open(filepath, 'wb') as f:
                 f.write(response.content)
-            print(f"✅ Downloaded: {filename}")
+            print(f"✅ Downloaded/Overwritten: {filename}")
         else:
             print(f"❌ Failed: {url} (HTTP {response.status_code})")
     except Exception as e:
@@ -67,19 +56,16 @@ def crawl_site():
 
         try:
             print(f"🔍 Crawling: {url} (depth {depth})")
-            time.sleep(delay)  # Be polite
+            time.sleep(delay)
 
             response = requests.get(url, headers=headers, timeout=10)
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Find all links on page
             for link in soup.find_all('a'):
                 href = link.get('href')
                 if href:
                     absolute_url = urljoin(base_url, href)
                     parsed_url = urlparse(absolute_url)
-
-                    # Clean URL by removing fragments and query parameters
                     clean_url = parsed_url._replace(fragment="", query="").geturl()
 
                     if is_pdf(clean_url):
@@ -90,9 +76,6 @@ def crawl_site():
                     elif is_valid(clean_url) and clean_url not in visited_urls:
                         visited_urls.add(clean_url)
                         queue.append((clean_url, depth + 1))
-
-        except Exception as e:
-            print(f"⚠️ Error crawling {url}: {str(e)}")
 
 
 if __name__ == "__main__":
