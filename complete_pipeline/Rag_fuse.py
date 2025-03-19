@@ -176,7 +176,7 @@ class RagFuse:
         usage_details = {
             "input": usage_metadata.get("input_tokens", 0),
             "output": usage_metadata.get("output_tokens", 0),
-            # While interesting langfuse just counts the token amount together which isnt a true amount
+            # While interesting langfuse just counts the token amount together which isn't a true amount
             #"token_usage": usage_metadata.get("total_tokens", 0),
             #"prompt_tokens": usage_metadata.get("input_tokens", 0),
             #"completion_tokens": usage_metadata.get("output_tokens", 0),
