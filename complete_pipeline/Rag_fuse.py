@@ -43,62 +43,36 @@ class RagFuse:
         self.sessionId = _generate_session_id()
         self.langfuse = Langfuse()
 
-    def preprocess(self, settings = "d"):
-        # Prompt user for input and output directories
-        if not settings:
-            settings = input("Set the preprocessing settings (c for custom, d for default and skip to skip): ")
-
+    def preprocess(self, settings = "d", input_dir=Path("../Docs"), output_dir=Path("../src/md_versions"), preprocessor="md"):
         if settings == "skip" or settings == "s":
             self.md_folder = Path("../src/md_versions")
             return None
 
-        if settings == "d":
-            input_dir = Path("../Docs")
-            output_dir = Path("../src/md_versions")
+        if preprocessor == "md":
             _md_preprocess(input_dir, output_dir)
             self.md_folder = output_dir
             return None
 
-        if settings == "c":
-            preprocessor_choice = input("Type md for markitdown preprocessing or leave empty for default: ")
-            input_dir = input("Enter the document folder directory (or type N for default): ")
-            output_dir = input("Enter the output folder directory (or type N for default): ")
+        if preprocessor == "u":
+            if output_dir.lower() == "d":
+                output_dir = Path("../src/Unstructured")
+            else:
+                output_dir = Path(output_dir)
 
-            if preprocessor_choice == "u":
-                if input_dir.lower() == "n":
-                    input_dir = Path("../Docs")
-                else:
-                    input_dir = Path(input_dir)
+            self.md_folder = output_dir
+            convert_folder(input_dir, output_dir)
 
-                if output_dir.lower() == "n":
-                    output_dir = Path("../src/Unstructured")
-                else:
-                    output_dir = Path(output_dir)
-
-                self.md_folder = output_dir
-                convert_folder(input_dir, output_dir)
-
-
-            if preprocessor_choice == "md":
-                if input_dir.lower() == "n":
-                    input_dir = Path("../Docs")
-                else:
-                    input_dir = Path(input_dir)
-
-                if output_dir.lower() == "n":
-                    output_dir = Path("../src/md_versions")
-                else:
-                    output_dir = Path(output_dir)
-
-                _md_preprocess(input_dir, output_dir)
-                self.md_folder = output_dir
-
-    def embed(self):
+    def embed(self, source_dir=None):
+        if source_dir:
+            self.md_folder = Path(source_dir)
         embeddings_array, md_documents = embed_from_directory(self.md_folder)
 
         # Hier übergeben wir sowohl embeddings_array als auch documents
         self.vectorstore = initialize_vector_db_langchain(embeddings_array, md_documents)
         print("Vector store initialized.")
+
+    def load_from_embedding(self, embeddings_dir: Path):
+        self.vectorstore = load_embeddings(embeddings_dir)
 
     def query(self):
         """
