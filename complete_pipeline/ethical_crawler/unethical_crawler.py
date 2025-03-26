@@ -8,8 +8,8 @@ import time
 # Configuration
 base_url = "https://www.concordia.ch"
 output_dir = "company_pdfs"
-max_depth = 3
-delay = 1
+max_depth = 5
+delay = 1.5
 headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyCrawler/1.0)'}
 
 # Initialize
@@ -35,7 +35,7 @@ def download_pdf(url):
             filename = os.path.basename(urlparse(url).path)
             filepath = os.path.join(output_dir, filename)
 
-            # Overwrite existing file without checking
+            # Overwrite existing file
             with open(filepath, 'wb') as f:
                 f.write(response.content)
             print(f"✅ Downloaded/Overwritten: {filename}")
@@ -76,6 +76,8 @@ def crawl_site():
                     elif is_valid(clean_url) and clean_url not in visited_urls:
                         visited_urls.add(clean_url)
                         queue.append((clean_url, depth + 1))
+        except Exception as e:  # This was missing proper indentation
+            print(f"⚠️ Error crawling {url}: {str(e)}")
 
 
 if __name__ == "__main__":
