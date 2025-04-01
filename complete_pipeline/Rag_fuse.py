@@ -1,6 +1,7 @@
 import getpass
+import json
 
-from chromadb import Settings
+import re
 from langfuse import Langfuse
 from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
 from complete_pipeline.prompt.query_result import QueryResult
@@ -112,6 +113,7 @@ class RagFuse:
             trace = self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"])
         else:
             trace = custom_handler.trace
+            trace.update(name="Custom", input={"question": query_input}, tags=["Custom"])
 
         if self.vectorstore is None:
             print("Vector store not initialized. Please run embed() first.")
@@ -156,8 +158,33 @@ class RagFuse:
         answer_gen.end(output={"answer": response}, usage_details=usage_details)
         trace.update(output={"answer": getattr(response, "content", response)},
                      usage_details={"token_usage": getattr(response, 'usage', {})})
+
+        try:
+            self._set_scores_from_response(response, trace.id)
+        except Exception as e:
+            print("Couldn't set scores because: ", e)
+
         self.langfuse.flush()
         return response
+
+    def _set_scores_from_response(self, response, trace_id):
+        content_str = response.content
+        data = json.loads(re.sub(r'^```json\s*|\s*```$', '', content_str.strip(), flags=re.DOTALL))
+
+        print(data)
+
+        self.langfuse.score(
+            trace_id=trace_id,
+            name="additional_context_eval",
+            value=data["additional_context_eval"],
+            config_id="cm8x1hl3j0061lm07jb41n37e"
+        )
+        self.langfuse.score(
+            trace_id=trace_id,
+            name="context_quality_eval",
+            value=data["context_quality_eval"],
+            config_id="cm8x1kk4l0064lm07scijf6qg"
+        )
 
 if __name__ == "__main__":
     if "GOOGLE_API_KEY" not in os.environ:
