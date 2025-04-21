@@ -1,3 +1,4 @@
+import uuid
 from pathlib import Path
 import numpy as np
 import glob
@@ -116,7 +117,7 @@ def query_vector_db_langchain(vector_store, input_query, k=3):
     print("Query results:", query_results)
     return query_results
 
-def query_documents_by_max_chunk(vector_store, input_query, k=520, top_n=3):
+def query_documents_by_max_chunk(vector_store, input_query, k=50, top_n=3):
     query_results = vector_store.similarity_search_with_score(input_query, k=k)
     grouped = {}
     for doc, score in query_results:
@@ -126,14 +127,14 @@ def query_documents_by_max_chunk(vector_store, input_query, k=520, top_n=3):
     sorted_docs = sorted(grouped.values(), key=lambda x: x["score"], reverse=True)
     return [(item["doc"], item["score"]) for item in sorted_docs[:top_n]]
 
-def embed_chunks_from_directory(input_directory):
+def embed_chunks_from_directory(input_directory, chunk_size=300, chunk_overlap=50):
     md_file_paths = get_md_file_paths(str(input_directory))
     if not md_file_paths:
         print(f"No markdown files found in {input_directory}.")
         return
 
     md_documents = []
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
     for file_path in md_file_paths:
         try:
@@ -207,6 +208,112 @@ def load_vector_db_langchain(collection_name="embeddings_collection_de", persist
     )
     return vector_store
 
+
+import os
+import shutil
+import uuid
+from pathlib import Path
+
+from preprocessing_scripts.pdf_to_md_converter import convert_pdfs_to_markdown
+from preprocessing_scripts.mark_any_down import mark_any_down
+from langchain.docstore.document import Document
+from langchain_huggingface import HuggingFaceEmbeddings
+
+
+def add_single_document(vector_store, document, embedding_function=None):
+    """
+    Adds a single document to the vector database.
+    """
+    if embedding_function is None:
+        embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    # Compute the embedding for the document text.
+    embedding = embedding_function.embed_documents([document.page_content])[0]
+
+    # Create a unique ID.
+    doc_id = f"vec_{uuid.uuid4().hex}"
+
+    # Add the document to the vector store.
+    vector_store._collection.add(
+        ids=[doc_id],
+        embeddings=[embedding],
+        metadatas=[document.metadata],
+        documents=[document.page_content]
+    )
+    print(f"Document added with ID: {doc_id}")
+
+
+def process_and_add_file(file_path, vector_store, temp_md_dir=Path("./temp_md")):
+    """
+    Processes a single file:
+      - If the file is a PDF, converts it to Markdown using
+        convert_pdfs_to_markdown.
+      - Otherwise, converts the file using mark_any_down.
+    The resulting Markdown content is then used to create a Document,
+    compute its embedding, and add it to the vector database.
+
+    :param file_path: Path to the input file.
+    :param vector_store: A pre-initialized vector store instance.
+    :param temp_md_dir: Directory where Markdown files will be saved.
+    """
+    file_path = Path(file_path)
+    temp_md_dir.mkdir(parents=True, exist_ok=True)
+
+    # Prepare to store the Markdown content.
+    if file_path.suffix.lower() == ".pdf":
+        # Create a temporary directory to mimic the expected input to convert_pdfs_to_markdown.
+        temp_input_dir = file_path.parent / "temp_input"
+        temp_input_dir.mkdir(parents=True, exist_ok=True)
+
+        # Copy the PDF to the temporary input directory.
+        dest_file = temp_input_dir / file_path.name
+        shutil.copy(file_path, dest_file)
+
+        # Convert the PDF to Markdown.
+        convert_pdfs_to_markdown(temp_input_dir, temp_md_dir)
+
+        # Assume the output Markdown file is named as the input file with a .md extension.
+        md_file = temp_md_dir / (file_path.stem + ".md")
+
+        # Clean up the temporary input directory.
+        shutil.rmtree(temp_input_dir)
+    else:
+        # For non-PDFs, call mark_any_down to convert the file.
+        mark_any_down(file_path, temp_md_dir)
+        md_file = temp_md_dir / (file_path.stem + ".md")
+
+    # Ensure the Markdown file was created.
+    if not md_file.exists():
+        print(f"Markdown file not found: {md_file}")
+        return
+
+    # Read the Markdown content.
+    with open(md_file, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    # Create a document from the Markdown.
+    doc = Document(
+        page_content=content,
+        metadata={"source": file_path.name, "original_path": str(file_path)}
+    )
+
+    # Add the document to the vector database.
+    add_single_document(vector_store, doc)
+
+    # Optionally, clean up the temporary Markdown file.
+    # md_file.unlink()
+
+
+# Example usage:
+if __name__ == "__main__":
+    # Assume vector_store is already initialized (e.g. via load_vector_db_langchain)
+    vector_store = load_vector_db_langchain(collection_name="embeddings_collection_en",
+                                            persist_directory="./chroma_db_en")
+
+    # Path to your input file (could be a PDF or another file type)
+    input_file = "path/to/your/document.pdf"  # or a .txt, .docx, etc.
+
+    process_and_add_file(input_file, vector_store)
 
 if __name__ == '__main__':
     base_dir = Path(__file__).resolve().parent

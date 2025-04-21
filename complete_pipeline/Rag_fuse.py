@@ -186,6 +186,26 @@ class RagFuse:
             config_id="cm8x1kk4l0064lm07scijf6qg"
         )
 
+    def add_document_from_file(self, file_path, temp_md_dir=Path("./temp_md")):
+        """
+        Processes a single file and adds its content to the vector database.
+
+        If the file is a PDF, it will be converted to Markdown using the
+        convert_pdfs_to_markdown function; otherwise, it uses mark_any_down.
+
+        The generated Markdown is then read, embedded, and added to the vector store.
+
+        :param file_path: Path to the file (PDF or otherwise) to be processed.
+        :param temp_md_dir: Directory where temporary Markdown files are stored.
+        """
+        if self.vectorstore is None:
+            print("Vector store not initialized. Please run embed() or load_vector_db() first.")
+            return
+
+        # Assuming the helper function is imported from chroma.py with the name process_and_add_file
+        from vector_db.chroma import process_and_add_file
+        process_and_add_file(file_path, self.vectorstore, temp_md_dir)
+
 if __name__ == "__main__":
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
@@ -193,6 +213,7 @@ if __name__ == "__main__":
     language = "de"
     try:
         rag.load_vector_db(language=language)
+        #rag.add_document_from_file("path/to/your/document.pdf")
     except Exception as e:
         print(e)
     client = rag.vectorstore._client
