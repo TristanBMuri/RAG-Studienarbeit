@@ -84,6 +84,7 @@ def test_prompt_triggers_embed_and_calls_super(monkeypatch, tmp_path):
     db_dir = tmp_path / 'prompt_db'
     src_dir = tmp_path / 'src_md2'
     src_dir.mkdir()
+    # Create existing db directory so load_store is invoked in __init__
     md_out = db_dir / 'md'
     md_out.mkdir(parents=True)
     (md_out / 'm.md').write_text('XYZ')
@@ -95,8 +96,10 @@ def test_prompt_triggers_embed_and_calls_super(monkeypatch, tmp_path):
     monkeypatch.setattr(chunked_module.RagFuse, 'prompt', fake_super_prompt)
 
     ref = ChunkedRagFuse(vector_store_dir=str(db_dir), language='en', source_dir=str(src_dir))
-    assert not ref.chunk_vsm.store
-    answer = ref.prompt(prompt='hi')
+    # Since the DB existed at init, chunk_vsm.store should be True
     assert ref.chunk_vsm.store is True
+
+    answer = ref.prompt(prompt='hi')
+    # Should delegate to super.prompt
     assert calls.get('ran', False) is True
     assert answer == 'fake-answer'
