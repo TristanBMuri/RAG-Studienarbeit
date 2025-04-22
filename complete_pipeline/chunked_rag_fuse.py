@@ -1,7 +1,6 @@
 from pathlib import Path
 from complete_pipeline.Rag_fuse import RagFuse
-from vector_store_manager import VectorStoreManager, VectorStoreConfig
-from langchain.docstore.document import Document
+from vector_db.vector_store_manager import VectorStoreConfig, VectorStoreManager
 
 
 class ChunkedRagFuse(RagFuse):
