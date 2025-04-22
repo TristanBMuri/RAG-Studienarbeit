@@ -1,229 +1,145 @@
-import getpass
-import json
-
-import re
+from pathlib import Path
+import uuid
 from langfuse import Langfuse
 from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
 from complete_pipeline.prompt.query_result import QueryResult
 from preprocessing_scripts.mark_any_down import mark_any_down
 from preprocessing_scripts.pdf_to_md_converter import convert_pdfs_to_markdown
-from preprocessing_scripts.any_unstructured import *
-from vector_db.chroma import *
-import uuid
-import os
-from pathlib import Path
+from preprocessing_scripts.any_unstructured import convert_folder
+from langchain.docstore.document import Document
+from vector_db.vector_store_manager import VectorStoreManager, VectorStoreConfig
 
-def _generate_session_id():
+
+def _generate_session_id() -> str:
     return uuid.uuid4().hex
 
-def _md_preprocess(input_dir, output_dir):
-    md_folder = Path(output_dir)
-    md_folder.mkdir(parents=True, exist_ok=True)
-    # Conversion of PDFs
+
+def _md_preprocess(input_dir: Path, output_dir: Path) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
     convert_pdfs_to_markdown(input_dir, output_dir)
-    # Conversion of non-PDFs
     for each_file in input_dir.iterdir():
-        if each_file.suffix.lower() == ".pdf":
-            continue
-        else:
+        if each_file.suffix.lower() != ".pdf":
             mark_any_down(each_file, output_dir)
 
+
 class RagFuse:
-    def __init__(self, custom_handler=None, prompt_template=None, vector_store_dir=None, language="de"):
-        self.model = None  # Placeholder for an LLM model
+    def __init__(
+        self,
+        custom_handler=None,
+        prompt_template: str = None,
+        vector_store_dir: str = None,
+        language: str = "de"
+    ):
+        self.language = language
+        self.model = None  # placeholder for LLM
         self.md_folder = Path("../src/md_versions")
-        if vector_store_dir is None:
-            self.vectorstore = None
-        else:
-            self.vectorstore = None
-            self.load_vector_db(language=language, persist_directory=vector_store_dir)
-        if prompt_template is None:
-            self.prompt_template  = "rag_prompt"
-            self.chat = LangfusePrompter(custom_handler=custom_handler)
-        else:
-            self.chat = LangfusePrompter(prompt_name=prompt_template, custom_handler=custom_handler)
+        # Langfuse setup
+        if prompt_template:
             self.prompt_template = prompt_template
+            self.chat = LangfusePrompter(prompt_name=prompt_template, custom_handler=custom_handler)
+        else:
+            self.prompt_template = "rag_prompt"
+            self.chat = LangfusePrompter(custom_handler=custom_handler)
         self.sessionId = _generate_session_id()
         self.langfuse = Langfuse()
+        # Vector store manager
+        if vector_store_dir:
+            cfg = VectorStoreConfig(
+                collection_name=f"embeddings_collection_{language}",
+                persist_directory=vector_store_dir
+            )
+            self.vsm = VectorStoreManager(cfg)
+            self.vsm.load_store()
+        else:
+            self.vsm = None
 
-    def preprocess(self, settings="d", input_dir=Path("../Docs"), output_dir=Path("../src/md_versions"), preprocessor="md"):
-        if settings == "skip" or settings == "s":
+    def preprocess(
+        self,
+        settings: str = "d",
+        input_dir: Path = Path("../Docs"),
+        output_dir: Path = Path("../src/md_versions"),
+        preprocessor: str = "md"
+    ) -> None:
+        if settings in ("skip", "s"):
             self.md_folder = Path("../src/md_versions")
-            return None
+            return
         if preprocessor == "md":
             _md_preprocess(input_dir, output_dir)
             self.md_folder = output_dir
-            return None
-        if preprocessor == "u":
-            # unstructured default is currently Path("../src/Unstructured")
-            self.md_folder = output_dir
+        else:
             convert_folder(input_dir, output_dir)
+            self.md_folder = output_dir
 
-    def embed(self, language, source_dir=None):
+    def embed(
+        self,
+        source_dir: Path = None
+    ) -> None:
         """
-        Embed documents for a given language.
-        Only documents whose file name indicates the target language (or those without a language tag, assumed English)
-        are included in the vector DB.
+        Embed all markdown docs using VectorStoreManager.
         """
-        if source_dir:
-            self.md_folder = Path(source_dir)
-        embeddings_array, md_documents = embed_from_directory(self.md_folder)
-        # Filter: include documents whose language is the target language or "en"
-        indices = [i for i, doc in enumerate(md_documents) if doc.metadata.get("language") in [language, "en"]]
-        if not indices:
-            print(f"No documents found for language {language}.")
+        md_dir = Path(source_dir) if source_dir else self.md_folder
+        # read markdown files
+        docs = []
+        for f in md_dir.glob("*.md"):
+            content = f.read_text(encoding="utf-8")
+            # infer language metadata
+            lang = 'en'
+            if '_de' in f.name:
+                lang = 'de'
+            elif '_fr' in f.name:
+                lang = 'fr'
+            docs.append(Document(page_content=content, metadata={"file_name": f.name, "path": str(f), "language": lang}))
+        embeddings, filtered = self.vsm.embed_documents(docs)  # full-doc embeddings
+        self.vsm.initialize_store(embeddings, filtered)
+
+    def load_vector_db(self, language: str, persist_directory: str = None) -> None:
+        if not self.vsm:
+            cfg = VectorStoreConfig(
+                collection_name=f"embeddings_collection_{language}",
+                persist_directory=persist_directory or f"./chroma_db_{language}"
+            )
+            self.vsm = VectorStoreManager(cfg)
+        self.vsm.load_store()
+
+    def prompt(
+        self,
+        prompt: str = None,
+        custom_handler=None,
+        k: int = 3,
+        top_n: int = 3
+    ):
+        query_input = prompt or input("Enter your question: ")
+        # start trace
+        trace = (custom_handler.trace if custom_handler
+                 else self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"]))
+        # ensure store
+        if not self.vsm or not self.vsm.store:
+            print("Vector store not initialized. Please run embed() or load_vector_db() first.")
             return
-        filtered_embeddings = embeddings_array[indices]
-        filtered_docs = [md_documents[i] for i in indices]
-        collection_name = f"embeddings_collection_{language}"
-        persist_directory = f"./chroma_db_{language}"
-        self.vectorstore = initialize_vector_db_langchain(filtered_embeddings, filtered_docs,
-                                                          collection_name=collection_name,
-                                                          persist_directory=persist_directory)
-        print("Vector store initialized for language:", language)
-
-    def load_from_embedding(self, embeddings_dir: Path):
-        self.vectorstore = load_embeddings(embeddings_dir)
-
-    def load_vector_db(self, language, persist_directory=None):
-        collection_name = f"embeddings_collection_{language}"
-        if persist_directory is None:
-            persist_directory = f"./chroma_db_{language}"
-
-        # This assumes load_vector_db_langchain is a helper function in chroma.py that loads an existing collection.
-        self.vectorstore = load_vector_db_langchain(collection_name=collection_name,
-                                                    persist_directory=persist_directory)
-        print(f"Loaded vector DB for language {language} from {persist_directory}")
-
-    def query(self):
-        if self.vectorstore is None:
-            print("Vector store not initialized. Please run embed() first.")
-            return []
-        query_input = input("Enter your search query: ")
-        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
-        return query_results
-
-    def prompt(self, prompt=None, custom_handler=None):
-        if prompt is None:
-            query_input = input("Enter your question: ")
-        else:
-            query_input = prompt
-
-        if custom_handler is None:
-            trace = self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"])
-        else:
-            trace = custom_handler.trace
-            trace.update(name="Custom", input={"question": query_input}, tags=["Custom"])
-
-        if self.vectorstore is None:
-            print("Vector store not initialized. Please run embed() first.")
-            return
-
+        # document retrieval
         retrieval = trace.span(name="Document Retrieval", input={"query": query_input})
         search_span = retrieval.span(name="Query Search")
-        query_results = query_vector_db_langchain(self.vectorstore, query_input, k=3)
+        query_results = self.vsm.query(query_input, k=k)
         search_span.end(output={"documents_found": len(query_results)})
-
-        text_extraction_span = retrieval.span(name="Text Re-Extraction")
+        # build context
         documents = [doc for doc, score in query_results]
-        context = "\n".join([doc.page_content for doc in documents])
-
-        meta_context_list = []
-        for doc, score in query_results:
-            meta = doc.metadata.copy()
-            meta.pop("page_content", None)
-            meta["score"] = score
-            meta_str = ", ".join(f"{k}: {v}" for k, v in meta.items())
-            meta_context_list.append(meta_str)
-        meta_context = "\n".join(meta_context_list)
-
-        text_extraction_span.end(output={"documents": documents})
+        context = "\n".join([d.page_content for d in documents])
+        meta_context = "\n".join(
+            [", ".join(f"{k}: {v}" for k, v in doc.metadata.items()) + f", score: {score}"
+             for doc, score in query_results]
+        )
         retrieval.end(output={"results_count": len(documents)})
-
+        # answer generation
         answer_gen = trace.generation(
             name="Answer Generation",
             model=self.chat.get_model(),
             prompt=self.langfuse.get_prompt(self.prompt_template),
-            input={"query": query_input, "docs": documents})
-
+            input={"query": query_input, "docs": documents}
+        )
         qr_response = QueryResult(meta_context, context)
         response = self.chat.prompt(query_input, qr_response, session_id=self.sessionId, full_response=True)
-
-        usage_metadata = getattr(response, 'usage_metadata', {})
-        usage_details = {
-            "input": usage_metadata.get("input_tokens", 0),
-            "output": usage_metadata.get("output_tokens", 0),
-        }
-
-        answer_gen.end(output={"answer": response}, usage_details=usage_details)
-        trace.update(output={"answer": getattr(response, "content", response)},
-                     usage_details={"token_usage": getattr(response, 'usage', {})})
-
-        try:
-            self._set_scores_from_response(response, trace.id)
-        except Exception as e:
-            print("Couldn't set scores because: ", e)
-
+        answer_gen.end(output={"answer": getattr(response, 'content', response)},
+                       usage_details={"token_usage": getattr(response, 'usage', {})})
+        trace.update(output={"answer": getattr(response, 'content', response)})
         self.langfuse.flush()
         return response
-
-    def _set_scores_from_response(self, response, trace_id):
-        content_str = response.content
-        data = json.loads(re.sub(r'^```json\s*|\s*```$', '', content_str.strip(), flags=re.DOTALL))
-
-        print(data)
-
-        self.langfuse.score(
-            trace_id=trace_id,
-            name="additional_context_eval",
-            value=data["additional_context_eval"],
-            config_id="cm8x1hl3j0061lm07jb41n37e"
-        )
-        self.langfuse.score(
-            trace_id=trace_id,
-            name="context_quality_eval",
-            value=data["context_quality_eval"],
-            config_id="cm8x1kk4l0064lm07scijf6qg"
-        )
-
-    def add_document_from_file(self, file_path, temp_md_dir=Path("./temp_md")):
-        """
-        Processes a single file and adds its content to the vector database.
-
-        If the file is a PDF, it will be converted to Markdown using the
-        convert_pdfs_to_markdown function; otherwise, it uses mark_any_down.
-
-        The generated Markdown is then read, embedded, and added to the vector store.
-
-        :param file_path: Path to the file (PDF or otherwise) to be processed.
-        :param temp_md_dir: Directory where temporary Markdown files are stored.
-        """
-        if self.vectorstore is None:
-            print("Vector store not initialized. Please run embed() or load_vector_db() first.")
-            return
-
-        # Assuming the helper function is imported from chroma.py with the name process_and_add_file
-        from vector_db.chroma import process_and_add_file
-        process_and_add_file(file_path, self.vectorstore, temp_md_dir)
-
-if __name__ == "__main__":
-    if "GOOGLE_API_KEY" not in os.environ:
-        os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter your Google AI API key: ")
-    rag = RagFuse(prompt_template="combined_rag")
-    language = "de"
-    try:
-        rag.load_vector_db(language=language)
-        #rag.add_document_from_file("path/to/your/document.pdf")
-    except Exception as e:
-        print(e)
-    client = rag.vectorstore._client
-    collection = client.get_collection(f"embeddings_collection_{language}")
-
-    if collection.count() == 0:
-        output_dir = Path("../src/company_pdfs")
-        #rag.preprocess(input_dir=Path("./ethical_crawler/company_pdfs"), output_dir=output_dir, preprocessor="u")
-        rag.embed(language="de", source_dir=output_dir)
-    # Example: Initialize for German language chatbot
-    test_question = "Welche Versicherungen beteiligen sich an der Finanzierung von Hilfsmitteln und Krankentransporten?"
-    re = rag.prompt(test_question)
-    print(re)
