@@ -1,6 +1,8 @@
 from pathlib import Path
 import uuid
 from langfuse import Langfuse
+from numpy.f2py.auxfuncs import throw_error
+
 from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
 from complete_pipeline.prompt.query_result import QueryResult
 from preprocessing_scripts.mark_any_down import mark_any_down
@@ -108,10 +110,20 @@ class RagFuse:
         k: int = 3,
         top_n: int = 3
     ):
-        query_input = prompt or input("Enter your question: ")
+        query_input = prompt
+        if not query_input:
+            throw_error("Please provide a query.")
         # start trace
-        trace = (custom_handler.trace if custom_handler
-                 else self.langfuse.trace(name="RAG Query", input={"question": query_input}, tags=["RAG"]))
+        trace = (
+            custom_handler.trace
+            if custom_handler
+            else self.langfuse.trace(
+                name="RAG Query",
+                input={"question": query_input},
+                tags=["RAG", f"embed:{self.vsm.config.embedding_model}"]
+            )
+        )
+
         # ensure store
         if not self.vsm or not self.vsm.store:
             print("Vector store not initialized. Please run embed() or load_vector_db() first.")
@@ -120,15 +132,18 @@ class RagFuse:
         retrieval = trace.span(name="Document Retrieval", input={"query": query_input})
         search_span = retrieval.span(name="Query Search")
         query_results = self.vsm.query(query_input, k=k)
+
+        #todo add document names
         search_span.end(output={"documents_found": len(query_results)})
         # build context
         documents = [doc for doc, score in query_results]
         context = "\n".join([d.page_content for d in documents])
-        meta_context = "\n".join(
-            [", ".join(f"{k}: {v}" for k, v in doc.metadata.items()) + f", score: {score}"
-             for doc, score in query_results]
-        )
+        meta_context = "\n".join([
+            ", ".join(f"{k}: {v}" for k, v in doc.metadata.items()) + f", score: {score}"
+            for doc, score in query_results
+        ])
         retrieval.end(output={"results_count": len(documents)})
+
         # answer generation
         answer_gen = trace.generation(
             name="Answer Generation",
@@ -138,8 +153,26 @@ class RagFuse:
         )
         qr_response = QueryResult(meta_context, context)
         response = self.chat.prompt(query_input, qr_response, session_id=self.sessionId, full_response=True)
-        answer_gen.end(output={"answer": getattr(response, 'content', response)},
-                       usage_details={"token_usage": getattr(response, 'usage', {})})
-        trace.update(output={"answer": getattr(response, 'content', response)})
-        self.langfuse.flush()
+        # corrected usage details
+        usage = getattr(response, 'usage_metadata', {})
+        prompt_tokens = usage.get('input_tokens', 0)
+        completion_tokens = usage.get('output_tokens', 0)
+        total_tokens = prompt_tokens + completion_tokens
+
+        answer_gen.end(
+            output={"answer": getattr(response, 'content', response)},
+            usage_details={
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": total_tokens
+            }
+        )
+        trace.update(
+            output={"answer": getattr(response, 'content', response)},
+            usage_details={
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": total_tokens
+            }
+        )
         return response
