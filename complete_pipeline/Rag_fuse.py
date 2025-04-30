@@ -133,8 +133,12 @@ class RagFuse:
         search_span = retrieval.span(name="Query Search")
         query_results = self.vsm.query(query_input, k=k)
 
-        #todo add document names
-        search_span.end(output={"documents_found": len(query_results)})
+        #todo test document names
+        doc_names = [doc.metadata.get("file_name", "") for doc, _ in query_results]
+        search_span.end(output={
+            "documents_found": len(query_results),
+            "document_names": doc_names
+        })
         # build context
         documents = [doc for doc, score in query_results]
         context = "\n".join([d.page_content for d in documents])

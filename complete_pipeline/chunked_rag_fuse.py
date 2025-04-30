@@ -1,4 +1,7 @@
 from pathlib import Path
+
+from numpy.f2py.auxfuncs import throw_error
+
 from complete_pipeline.Rag_fuse import RagFuse
 from vector_db.vector_store_manager import VectorStoreConfig, VectorStoreManager
 
@@ -53,7 +56,9 @@ class ChunkedRagFuse(RagFuse):
         k=50,
         top_n=3
     ):
-        query_input = prompt or input("Enter your question: ")
+        query_input = prompt
+        if not query_input:
+            throw_error("Please provide a query.")
         if not self.chunk_vsm.store:
             print(f"Embedding new chunked DB from '{self.source_dir}'...")
             self.embed(source_dir=str(self.source_dir))

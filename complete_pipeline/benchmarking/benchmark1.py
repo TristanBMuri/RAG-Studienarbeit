@@ -17,13 +17,14 @@ PDF_DIR = BASE_DIR / "Docs"
 DB_BASE_DIR = BASE_DIR / "bench_dbs"
 DB_BASE_DIR.mkdir(exist_ok=True)
 EMBED_MODELS = [
-    "all-MiniLM-L6-v2",
     "sentence-transformers/all-MiniLM-L12-v2",
+    "intfloat/multilingual-e5-base",
+    "all-MiniLM-L6-v2",
     # add more models as needed
 ]
 VARIANTS = [
-    ("full", RagFuse),
-    ("chunked", ChunkedRagFuse)
+    ("chunked", ChunkedRagFuse),
+    ("full", RagFuse)
 ]
 LANG = "de"
 DATASET_NAME = "rag_conci_test_fragen"
