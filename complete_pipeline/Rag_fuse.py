@@ -1,7 +1,9 @@
+import json
 from pathlib import Path
 import uuid
 from langfuse import Langfuse
 from numpy.f2py.auxfuncs import throw_error
+import re
 
 from complete_pipeline.prompt.langfuseprompter import LangfusePrompter
 from complete_pipeline.prompt.query_result import QueryResult
@@ -163,6 +165,11 @@ class RagFuse:
         completion_tokens = usage.get('output_tokens', 0)
         total_tokens = prompt_tokens + completion_tokens
 
+        try:
+            record_categorical_scores(trace, response)
+        except Exception as exc:
+            trace.span(name="Score Recording Error").end(output={"error": str(exc)})
+
         answer_gen.end(
             output={"answer": getattr(response, 'content', response)},
             usage_details={
@@ -180,3 +187,46 @@ class RagFuse:
             }
         )
         return response
+
+
+def extract_first_json(text: str) -> dict:
+    """Return the *first* JSON object found in *text* (raises if none)."""
+    match = re.search(r"\{.*\}", text, re.S)
+    if not match:
+        raise ValueError("No JSON object found in LLM response.")
+    return json.loads(match.group(0))
+
+
+def record_categorical_scores(trace, response) -> dict:
+    """Parse *response*, store categorical scores on *trace*, return the values.
+
+    Parameters
+    ----------
+    trace : langfuse.Trace
+        The trace previously opened for this LLM call.
+    response : langfuse.Generation | str
+        The raw LLM response (Generation or plain string).
+
+    Returns
+    -------
+    dict
+        A dict with the stored field→value pairs (useful for debugging).
+    """
+    raw_text = getattr(response, "content", str(response))
+    data = extract_first_json(raw_text)
+
+    stored = {}
+    for field in ("additional_context_eval", "context_quality_eval"):
+        if field not in data:
+            raise KeyError(f"Field '{field}' missing in response JSON")
+        value = data[field]
+        # Write directly as categorical
+        Langfuse().score(
+            trace_id=trace.id,
+            name=field,
+            value=value,
+            data_type="CATEGORICAL",
+            comment=value,
+        )
+        stored[field] = value
+    return stored
