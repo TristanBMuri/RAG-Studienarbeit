@@ -43,8 +43,8 @@ class ChunkedRagFuse(RagFuse):
         temp_md.mkdir(parents=True, exist_ok=True)
         self.preprocess(settings="d", input_dir=src, output_dir=temp_md, preprocessor="md")
         # read and chunk
-        texts = [p.read_text(encoding="utf-8") for p in temp_md.glob("*.md")]
-        embeddings, chunks = self.chunk_vsm.embed_and_chunk(texts)
+        docs = self._md_glob(temp_md)
+        embeddings, chunks = self.chunk_vsm.embed_and_chunk(docs)
         self.chunk_vsm.initialize_store(embeddings, chunks)
         self.vsm = self.chunk_vsm
         return self.vsm
@@ -54,7 +54,8 @@ class ChunkedRagFuse(RagFuse):
         prompt=None,
         custom_handler=None,
         k=50,
-        top_n=3
+        top_n=3,
+        full_doc: bool = True
     ):
         query_input = prompt
         if not query_input:
@@ -63,4 +64,4 @@ class ChunkedRagFuse(RagFuse):
             print(f"Embedding new chunked DB from '{self.source_dir}'...")
             self.embed(source_dir=str(self.source_dir))
         self.vsm = self.chunk_vsm
-        return super().prompt(prompt=query_input, custom_handler=custom_handler)
+        return super().prompt(prompt=query_input, custom_handler=custom_handler, top_n=top_n, k=k, full_doc=full_doc)

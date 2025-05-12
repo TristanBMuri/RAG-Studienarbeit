@@ -70,6 +70,7 @@ class VectorStoreManager:
             embeddings_batch = embeddings[start:end].tolist()
             metadatas = [doc.metadata for doc in batch_docs]
             texts = [doc.page_content for doc in batch_docs]
+            # todo dont use _collection
             store._collection.add(
                 ids=ids,
                 embeddings=embeddings_batch,
@@ -105,7 +106,7 @@ class VectorStoreManager:
 
     def embed_and_chunk(
         self,
-        raw_texts: List[str]
+        docs: List[Document]
     ) -> (np.ndarray, List[Document]):
         """
         Split raw_texts into chunks, compute embeddings, and return chunked documents.
@@ -115,12 +116,17 @@ class VectorStoreManager:
             chunk_overlap=self.config.chunk_overlap
         )
         chunks: List[Document] = []
-        for idx, text in enumerate(raw_texts):
-            text_chunks = splitter.split_text(text)
+        for doc in docs:
+            text_chunks = splitter.split_text(doc.page_content)
             for i, chunk in enumerate(text_chunks):
                 chunks.append(Document(
                     page_content=chunk,
-                    metadata={"source_index": idx, "chunk_index": i}
+                    metadata={
+                        "file_name": doc.metadata.get("file_name"),
+                        "path": doc.metadata.get("path"),
+                        "language": doc.metadata.get("language"),
+                        "chunk_index": i,
+                    }
                 ))
         embeddings = self.embedding_function.embed_documents([
             c.page_content for c in chunks

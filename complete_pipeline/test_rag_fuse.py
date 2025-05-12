@@ -116,6 +116,6 @@ def test_prompt_success():
         'get_prompt': lambda self, t: '',
         'flush': lambda self: None
     })()
-    response = rag.prompt(prompt="query")
+    response = rag.prompt(prompt="query", full_doc=True)
     assert hasattr(response, 'content') and response.content == "dummy-answer"
 

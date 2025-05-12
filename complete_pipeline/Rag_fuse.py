@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 import uuid
+from typing import List
+
 from langfuse import Langfuse
 from numpy.f2py.auxfuncs import throw_error
 import re
@@ -83,6 +85,11 @@ class RagFuse:
         """
         md_dir = Path(source_dir) if source_dir else self.md_folder
         # read markdown files
+        docs = self._md_glob(md_dir)
+        embeddings, filtered = self.vsm.embed_documents(docs)  # full-doc embeddings
+        self.vsm.initialize_store(embeddings, filtered)
+
+    def _md_glob(self, md_dir) -> (List[Document]):
         docs = []
         for f in md_dir.glob("*.md"):
             content = f.read_text(encoding="utf-8")
@@ -93,8 +100,7 @@ class RagFuse:
             elif '_fr' in f.name:
                 lang = 'fr'
             docs.append(Document(page_content=content, metadata={"file_name": f.name, "path": str(f), "language": lang}))
-        embeddings, filtered = self.vsm.embed_documents(docs)  # full-doc embeddings
-        self.vsm.initialize_store(embeddings, filtered)
+        return docs
 
     def load_vector_db(self, language: str, persist_directory: str = None) -> None:
         if not self.vsm:
@@ -110,7 +116,8 @@ class RagFuse:
         prompt: str = None,
         custom_handler=None,
         k: int = 3,
-        top_n: int = 3
+        top_n: int = 3,
+        full_doc: bool = False
     ):
         query_input = prompt
         if not query_input:
@@ -135,20 +142,47 @@ class RagFuse:
         search_span = retrieval.span(name="Query Search")
         query_results = self.vsm.query(query_input, k=k)
 
-        #todo test document names
         doc_names = [doc.metadata.get("file_name", "") for doc, _ in query_results]
+        top_n_doc_names = []
+        for doc_name in doc_names:
+            if doc_name not in top_n_doc_names:
+                top_n_doc_names.append(doc_name)
+            if len(top_n_doc_names) >= top_n:
+                break
+        # todo only take 3 not all chunks for the 3 documents
+        top_n_docs = []
+        for doc, _ in query_results:
+            if doc.metadata.get("file_name", "") in top_n_doc_names:
+                top_n_docs.append(doc)
+                top_n_doc_names.remove(doc.metadata.get("file_name", ""))
+                if len(top_n_docs) >= top_n:
+                    break
+
         search_span.end(output={
             "documents_found": len(query_results),
             "document_names": doc_names
         })
         # build context
-        documents = [doc for doc, score in query_results]
+        if not full_doc:
+            documents = [doc for doc, score in query_results]
+        else:
+            documents = []
+            doc_names = [doc.metadata.get("file_name", "") for doc in top_n_docs]
+
+            for doc in top_n_docs:
+                file_name = doc.metadata.get("file_name")
+                file_path = self.md_folder / file_name
+                if not file_path.exists():
+                    raise FileNotFoundError(f"Expected file {file_path} not found")
+                full_text = file_path.read_text(encoding="utf-8")
+                documents.append(Document(page_content=full_text, metadata=doc.metadata))
+            
         context = "\n".join([d.page_content for d in documents])
         meta_context = "\n".join([
             ", ".join(f"{k}: {v}" for k, v in doc.metadata.items()) + f", score: {score}"
             for doc, score in query_results
         ])
-        retrieval.end(output={"results_count": len(documents)})
+        retrieval.end(output={"results_count": len(documents), "document_names": doc_names})
 
         # answer generation
         answer_gen = trace.generation(

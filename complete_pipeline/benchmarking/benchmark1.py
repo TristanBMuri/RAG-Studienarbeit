@@ -17,14 +17,14 @@ PDF_DIR = BASE_DIR / "Docs"
 DB_BASE_DIR = BASE_DIR / "bench_dbs"
 DB_BASE_DIR.mkdir(exist_ok=True)
 EMBED_MODELS = [
-    "sentence-transformers/all-MiniLM-L12-v2",
+    #"sentence-transformers/all-MiniLM-L12-v2",
     "intfloat/multilingual-e5-base",
-    "all-MiniLM-L6-v2",
+    # "all-MiniLM-L6-v2",
     # add more models as needed
 ]
 VARIANTS = [
     ("chunked", ChunkedRagFuse),
-    ("full", RagFuse)
+    #("full", RagFuse)
 ]
 LANG = "de"
 DATASET_NAME = "rag_conci_test_fragen"
@@ -32,16 +32,6 @@ DATASET_NAME = "rag_conci_test_fragen"
 # --- Dataset setup ---
 lf = Langfuse()
 dataset = lf.get_dataset(DATASET_NAME)
-
-# --- No-op handler to bypass Langfuse tracing errors ---
-class DummyHandler:
-    def trace(self, *args, **kwargs):
-        return DummySpan()
-
-class DummySpan:
-    def span(self, *args, **kwargs): return self
-    def generation(self, *args, **kwargs): return self
-    def end(self, *args, **kwargs): pass
 
 # Stub out flush to avoid hanging
 # (we'll not flush real Langfuse to avoid update errors)
@@ -95,14 +85,19 @@ for model_name in EMBED_MODELS:
 
         rag.load_vector_db(language=LANG)
 
-
+        # todo dont use _collection
         rag.vsm.store and rag.vsm.store._collection.count() or sys.exit("❌  Vector store is empty – aborting run")
+        dt_string = datetime.now().strftime("%Y/%m/%d/%H/%M")
 
+        new_run_name = (f"run_{dt_string}_"
+                        f"") + str(uuid.uuid4())
         # iterate over dataset items and prompt
         for item in dataset.items:
             prompt_text = item.input.get('content', '')
+            handler = item.get_langchain_handler(run_name=new_run_name)
+
             try:
-                rag.prompt(prompt=prompt_text)
+                rag.prompt(prompt=prompt_text,  custom_handler=handler, full_doc=True)
                 time.sleep(20)
             except Exception as e:
                 print(f"Error on item {item.id}: {e}")
