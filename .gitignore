@@ -178,3 +178,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 /complete_pipeline/ethical_crawler/company_pdfs/
+
+# IDE settings (may contain secrets)
+.idea/
